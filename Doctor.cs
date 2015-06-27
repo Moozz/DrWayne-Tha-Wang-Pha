@@ -1,29 +1,27 @@
 using System;
 using System.Collections.Generic;
 
-namespace MyNamespace
-{
-    public enum DoctorExperience
-    {
-        INTERN1,
-        INTERN2,
-        INTERN3,
-        OLDIE
+namespace DrWayne {
+    public enum DoctorExperience {
+        Intern1,
+        Intern2,
+        Intern3,
+        Oldie
     }
     
     public class Doctor {       
         public Doctor(string name, DoctorExperience exp) {
             Name = name;
             Exp = exp;
-            Tireness = 0;
+            AbsenceList = new HashSet<DateTime>();
         }
         
         public string Name { get; private set; }
         public DoctorExperience Exp { get; private set; }
-        private int Tireness { get; set; }
+        public HashSet<DateTime> AbsenceList { get; private set; }
         
-        public void RegisterAbsence(ICollection<DateTime> dateList) {
-            
-        }        
+        public void RegisterAbsence(DateTime date) {
+            AbsenceList.Add(date);
+        }
     }
 }
