@@ -32,12 +32,13 @@ namespace DrWayne {
 			did.RegisterAbsence(DateTime.Parse("23 Jul 2015"));
 			var doctorList = new List<Doctor> { did, nui, ja, bean, pua, golf }.Select(x => new KeyValuePair<Doctor, int>(x, 0)).ToList();
 			
-			var t = Task.Run(() => Solve(1, doctorList, new WayneTable()));
-			while (t.Status == TaskStatus.Running) {
-				Thread.Sleep(2000);
+			using (var t = new Task(() => Solve(1, doctorList, new WayneTable()))) {
+				t.Start();
+				t.Wait();
+				Console.WriteLine("Done");
 			}
-			Console.WriteLine("Done");
         }
+
 		public static void Solve(int day, List<KeyValuePair<Doctor, int>> tirenessState, WayneTable wayneTable) {
 			if (day >= 31) {
 				Console.WriteLine("{0}\n", wayneTable);

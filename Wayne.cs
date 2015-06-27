@@ -57,10 +57,13 @@ namespace DrWayne {
 		}
 		
 		private bool IsThisDoctorAtERYesterday(Doctor d) {
-			return _wayneTable.Last().ERDoctor == d;
+			return _wayneTable.Count > 0 && _wayneTable.Last().ERDoctor == d;
 		}
 		
 		private bool IsThisDoctorInWayneTheLastTwoDays(Doctor d) {
+			if (_wayneTable.Count < 2)
+				return false;
+
 			var wayneTableCopy = _wayneTable.ToList();
 			wayneTableCopy.Reverse();
 			return wayneTableCopy.Take(2).All(x => x.ERDoctor == d || x.WardDoctor == d);
