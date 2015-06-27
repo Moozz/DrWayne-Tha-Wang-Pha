@@ -25,12 +25,10 @@ namespace DrWayne {
 	}
 	
 	public class WayneTable {
-		public WayneTable(int maxN) {
+		public WayneTable() {
 			_wayneTable = new List<Wayne>();
-			
 		}
 		public List<Wayne> _wayneTable;
-		public int _maxN;
 		
 		public bool AddWayneIfAcceptable(Wayne wayne) {
 			if (wayne.IsAcceptable() && 
@@ -44,10 +42,6 @@ namespace DrWayne {
 			return false;			
 		}
 		
-		public bool IsDone() {
-			return _wayneTable.Count() == _maxN;
-		}
-		
 		public override string ToString() {
 			var sb = new StringBuilder();
 			foreach (var wayne in _wayneTable) {
@@ -57,7 +51,7 @@ namespace DrWayne {
 		}
 		
 		public WayneTable Copy() {
-			var wayneTableCopy = new WayneTable(this._maxN);
+			var wayneTableCopy = new WayneTable();
 			wayneTableCopy._wayneTable = this._wayneTable.ToList();
 			return wayneTableCopy;
 		}
