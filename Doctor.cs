@@ -10,17 +10,20 @@ namespace DrWayne {
     }
     
     public class Doctor {       
-        public Doctor(string name, DoctorExperience exp) {
+        public Doctor(string name, DoctorExperience exp, double factor = 1) {
             Name = name;
             Exp = exp;
             AbsenceList = new HashSet<DateTime>();
             Tireness = 0;
+            Factor = factor;
         }
         
         public string Name { get; private set; }
         public DoctorExperience Exp { get; private set; }
         public HashSet<DateTime> AbsenceList { get; private set; }
         public int Tireness { get; set; }
+        
+        public double Factor { get; private set; }
         
         public void RegisterAbsence(DateTime date) {
             AbsenceList.Add(date);

@@ -8,7 +8,7 @@ namespace DrWayne {
     public class Program {
 		private static List<Doctor> _doctorList;
         public static void Main(string[] args) {
-            var did = new Doctor("P' Did", DoctorExperience.Oldie);
+            var did = new Doctor("P' Did", DoctorExperience.Oldie, 0.4);
 			var nui = new Doctor("P' Nui", DoctorExperience.Oldie);
 			var ja = new Doctor("Ja+", DoctorExperience.Intern3);
 			var bean = new Doctor("Bean", DoctorExperience.Intern3);
@@ -45,6 +45,8 @@ namespace DrWayne {
 		public static void Solve(int day, WayneTable wayneTable) {
 			if (day >= 31) {
 				Console.WriteLine("{0}", wayneTable);
+				Console.WriteLine("Tireness level at the end of the month");
+				Console.WriteLine(string.Join("\n", _doctorList.Select(x => x.Name + " : " + x.Tireness)));
 				Console.ReadLine();
 				return;
 			}
@@ -53,7 +55,8 @@ namespace DrWayne {
 			var wayne = new Wayne(currentDate);
 			var rnd = new Random();
 			var doctorListCopy = _doctorList.Where(x => !x.AbsenceList.Contains(currentDate))
-											.OrderBy(x => x.Tireness)
+											.OrderBy(x => x.Tireness / x.Factor)
+											.ThenBy(x => rnd.Next())
 											.ToList();
 			foreach (var erDoctor in doctorListCopy) {
 				wayne.ERDoctor = erDoctor;
