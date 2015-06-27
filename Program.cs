@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace DrWayne {
     public class Program {
+		private static List<Doctor> _doctorList;
         public static void Main(string[] args) {
             var did = new Doctor("P' Did", DoctorExperience.Oldie);
 			var nui = new Doctor("P' Nui", DoctorExperience.Oldie);
@@ -30,10 +31,10 @@ namespace DrWayne {
 			did.RegisterAbsence(DateTime.Parse("21 Jul 2015"));
 			did.RegisterAbsence(DateTime.Parse("22 Jul 2015"));
 			did.RegisterAbsence(DateTime.Parse("23 Jul 2015"));
-			var doctorList = new List<Doctor> { did, nui, ja, bean, pua, golf }.Select(x => new KeyValuePair<Doctor, int>(x, 0)).ToList();
 			
+			_doctorList = new List<Doctor> { did, nui, ja, bean, pua, golf };
 			
-			Solve(1, doctorList, new WayneTable());
+			Solve(1, new WayneTable());
 			
 			//  using (var t = Task.Run(() => Solve(1, doctorList, new WayneTable()))) {
 			//  	t.Wait();
@@ -41,7 +42,7 @@ namespace DrWayne {
 			//  }
         }
 
-		public static void Solve(int day, List<KeyValuePair<Doctor, int>> tirenessState, WayneTable wayneTable) {
+		public static void Solve(int day, WayneTable wayneTable) {
 			if (day >= 31) {
 				Console.WriteLine("{0}", wayneTable);
 				Console.ReadLine();
@@ -51,30 +52,35 @@ namespace DrWayne {
 			var isSaturday = currentDate.DayOfWeek == DayOfWeek.Saturday;			
 			var wayne = new Wayne(currentDate);
 			var rnd = new Random();
-			var tirenessStateCopy = tirenessState.Where(x => !x.Key.AbsenceList.Contains(currentDate))
-												.OrderBy(x => rnd.Next())
-												.ToList();
-			
-			foreach (var erDoctor in tirenessStateCopy) {
-				wayne.ERDoctor = erDoctor.Key;
-				foreach (var wardDocter in tirenessStateCopy.Where(x => x.Key != erDoctor.Key)) {
-					wayne.WardDoctor = wardDocter.Key;
+			var doctorListCopy = _doctorList.Where(x => !x.AbsenceList.Contains(currentDate))
+											.OrderBy(x => x.Tireness)
+											.ToList();
+			foreach (var erDoctor in doctorListCopy) {
+				wayne.ERDoctor = erDoctor;
+				erDoctor.Tireness += 10;
+				foreach (var wardDocter in doctorListCopy.Where(x => x != erDoctor)) {
+					wayne.WardDoctor = wardDocter;
+					wardDocter.Tireness += 5;
 					if (!isSaturday) {
 						var wayneTableCopy = wayneTable.Copy();
 						if (wayneTableCopy.AddWayneIfAcceptable(wayne)) {
-							Solve(day + 1, tirenessState, wayneTableCopy);
+							Solve(day + 1, wayneTableCopy);
 						}
 					}
 					else {
-						foreach (var OPDDoctor in tirenessStateCopy.Where(x => x.Key != erDoctor.Key && x.Key != wardDocter.Key)) {
-							wayne.OPDDoctor = OPDDoctor.Key;
+						foreach (var OPDDoctor in doctorListCopy.Where(x => x != erDoctor && x != wardDocter)) {
+							wayne.OPDDoctor = OPDDoctor;
+							OPDDoctor.Tireness += 5;
 							var wayneTableCopy = wayneTable.Copy();
 							if (wayneTableCopy.AddWayneIfAcceptable(wayne)) {
-								Solve(day + 1, tirenessState, wayneTableCopy);
+								Solve(day + 1, wayneTableCopy);
 							}
+							OPDDoctor.Tireness -= 5;
 						}
 					}
+					wardDocter.Tireness -= 5;
 				}
+				erDoctor.Tireness -= 10;
 			}
 		}
     }

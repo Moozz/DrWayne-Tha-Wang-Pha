@@ -14,11 +14,13 @@ namespace DrWayne {
             Name = name;
             Exp = exp;
             AbsenceList = new HashSet<DateTime>();
+            Tireness = 0;
         }
         
         public string Name { get; private set; }
         public DoctorExperience Exp { get; private set; }
         public HashSet<DateTime> AbsenceList { get; private set; }
+        public int Tireness { get; set; }
         
         public void RegisterAbsence(DateTime date) {
             AbsenceList.Add(date);
