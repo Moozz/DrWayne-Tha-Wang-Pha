@@ -35,7 +35,7 @@ namespace DrWayne {
 				!IsThisDoctorAtERYesterday(wayne.ERDoctor) &&
 				!IsThisDoctorInWayneTheLastTwoDays(wayne.ERDoctor) &&
 				!IsThisDoctorInWayneTheLastTwoDays(wayne.WardDoctor) && 
-				(wayne.OPDDoctor != null && !IsThisDoctorInWayneTheLastTwoDays(wayne.OPDDoctor))) {
+				(wayne.OPDDoctor == null || !IsThisDoctorInWayneTheLastTwoDays(wayne.OPDDoctor))) {
 				_wayneTable.Add(wayne);
 				return true;
 			}
@@ -44,8 +44,13 @@ namespace DrWayne {
 		
 		public override string ToString() {
 			var sb = new StringBuilder();
+			sb.AppendFormat("{0} {1, 10} {2, 10}, {3, 10}\n", "Date", "ER", "WARD", "OPD");
 			foreach (var wayne in _wayneTable) {
-				sb.AppendFormat("{0}\n", wayne.WayneDate.ToString("dd MMM yyyy"));
+				sb.AppendFormat("{0} {1, 10} {2, 10}, {3, 10}\n", 
+					wayne.WayneDate.ToString("dd MMM yyyy"), 
+					wayne.ERDoctor.Name, 
+					wayne.WardDoctor.Name, 
+					wayne.OPDDoctor == null ? "-" : wayne.OPDDoctor.Name);
 			}
 			return sb.ToString();
 		}

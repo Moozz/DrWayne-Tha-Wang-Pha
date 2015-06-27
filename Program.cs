@@ -32,37 +32,46 @@ namespace DrWayne {
 			did.RegisterAbsence(DateTime.Parse("23 Jul 2015"));
 			var doctorList = new List<Doctor> { did, nui, ja, bean, pua, golf }.Select(x => new KeyValuePair<Doctor, int>(x, 0)).ToList();
 			
-			using (var t = new Task(() => Solve(1, doctorList, new WayneTable()))) {
-				t.Start();
-				t.Wait();
-				Console.WriteLine("Done");
-			}
+			
+			Solve(1, doctorList, new WayneTable());
+			
+			//  using (var t = Task.Run(() => Solve(1, doctorList, new WayneTable()))) {
+			//  	t.Wait();
+			//  	Console.WriteLine(t.Status);
+			//  }
         }
 
 		public static void Solve(int day, List<KeyValuePair<Doctor, int>> tirenessState, WayneTable wayneTable) {
 			if (day >= 31) {
-				Console.WriteLine("{0}\n", wayneTable);
+				Console.WriteLine("{0}", wayneTable);
+				Console.ReadLine();
 				return;
 			}
 			var currentDate = new DateTime(2015, 7, day);
 			var isSaturday = currentDate.DayOfWeek == DayOfWeek.Saturday;			
-			
 			var wayne = new Wayne(currentDate);
-			foreach (var erDoctor in tirenessState) {
+			var rnd = new Random();
+			var tirenessStateCopy = tirenessState.Where(x => !x.Key.AbsenceList.Contains(currentDate))
+												.OrderBy(x => rnd.Next())
+												.ToList();
+			
+			foreach (var erDoctor in tirenessStateCopy) {
 				wayne.ERDoctor = erDoctor.Key;
-				foreach (var wardDocter in tirenessState.Where(x => x.Key != erDoctor.Key)) {
+				foreach (var wardDocter in tirenessStateCopy.Where(x => x.Key != erDoctor.Key)) {
 					wayne.WardDoctor = wardDocter.Key;
 					if (!isSaturday) {
 						var wayneTableCopy = wayneTable.Copy();
-						if (wayneTableCopy.AddWayneIfAcceptable(wayne))
-							Solve(day + 1, tirenessState, wayneTableCopy);	
+						if (wayneTableCopy.AddWayneIfAcceptable(wayne)) {
+							Solve(day + 1, tirenessState, wayneTableCopy);
+						}
 					}
 					else {
-						foreach (var OPDDoctor in tirenessState.Where(x => x.Key != erDoctor.Key && x.Key != wardDocter.Key)) {
+						foreach (var OPDDoctor in tirenessStateCopy.Where(x => x.Key != erDoctor.Key && x.Key != wardDocter.Key)) {
 							wayne.OPDDoctor = OPDDoctor.Key;
 							var wayneTableCopy = wayneTable.Copy();
-							if (wayneTableCopy.AddWayneIfAcceptable(wayne))
-								Solve(day + 1, tirenessState, wayneTableCopy);	
+							if (wayneTableCopy.AddWayneIfAcceptable(wayne)) {
+								Solve(day + 1, tirenessState, wayneTableCopy);
+							}
 						}
 					}
 				}
