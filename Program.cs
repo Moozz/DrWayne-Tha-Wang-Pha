@@ -23,6 +23,8 @@ namespace DrWayne {
 			
 			_doctorList = new List<Doctor> { did, nui, ja, bean, nong1, golf };
 			
+			DateTimeExtension.SetAsHoliday(new DateTime(year, month, 12));
+			
 			var wayneTable = new WayneTable(year, month);
 			Solve(wayneTable);
         }
@@ -36,7 +38,6 @@ namespace DrWayne {
 				return;
 			}
 			var currentDate = new DateTime(wayneTable.Year, wayneTable.Month, wayneTable.GetLastWayneDay() + 1);
-			var isSaturday = currentDate.DayOfWeek == DayOfWeek.Saturday;			
 			var wayne = new Wayne(currentDate);
 			var rnd = new Random();
 			var doctorListCopy = _doctorList.Where(x => !x.AbsenceList.Contains(currentDate))
@@ -49,7 +50,7 @@ namespace DrWayne {
 				foreach (var wardDocter in doctorListCopy.Where(x => x != erDoctor)) {
 					wayne.WardDoctor = wardDocter;
 					wardDocter.Tireness += 5;
-					if (!isSaturday) {
+					if (!currentDate.NeedOPD()) {
 						var wayneTableCopy = wayneTable.Copy();
 						if (wayneTableCopy.AddWayneIfAcceptable(wayne)) {
 							Solve(wayneTableCopy);
