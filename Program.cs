@@ -38,18 +38,26 @@ namespace DrWayne {
 				return;
 			}
 			var currentDate = new DateTime(wayneTable.Year, wayneTable.Month, wayneTable.GetLastWayneDay() + 1);
+			var erTireness = 10;
+			var wardTireness = 5;
+			var OPDTireness = 4;
+			if (currentDate.IsHoliday()) {
+				erTireness = (erTireness * 3) / 2;
+				wardTireness = (wardTireness * 3) / 2;
+			}
+			
 			var wayne = new Wayne(currentDate);
 			var rnd = new Random();
 			var doctorListCopy = _doctorList.Where(x => !x.AbsenceList.Contains(currentDate))
 											.OrderBy(x => x.Tireness / x.Factor)
 											.ThenBy(x => rnd.Next())
-											.ToList();
+											.ToList();					
 			foreach (var erDoctor in doctorListCopy) {
 				wayne.ERDoctor = erDoctor;
-				erDoctor.Tireness += 10;
+				erDoctor.Tireness += erTireness;
 				foreach (var wardDocter in doctorListCopy.Where(x => x != erDoctor)) {
 					wayne.WardDoctor = wardDocter;
-					wardDocter.Tireness += 5;
+					wardDocter.Tireness += wardTireness;
 					if (!currentDate.NeedOPD()) {
 						var wayneTableCopy = wayneTable.Copy();
 						if (wayneTableCopy.AddWayneIfAcceptable(wayne)) {
@@ -59,17 +67,17 @@ namespace DrWayne {
 					else {
 						foreach (var OPDDoctor in doctorListCopy.Where(x => x != erDoctor && x != wardDocter)) {
 							wayne.OPDDoctor = OPDDoctor;
-							OPDDoctor.Tireness += 5;
+							OPDDoctor.Tireness += OPDTireness;
 							var wayneTableCopy = wayneTable.Copy();
 							if (wayneTableCopy.AddWayneIfAcceptable(wayne)) {
 								Solve(wayneTableCopy);
 							}
-							OPDDoctor.Tireness -= 5;
+							OPDDoctor.Tireness -= OPDTireness;
 						}
 					}
-					wardDocter.Tireness -= 5;
+					wardDocter.Tireness -= wardTireness;
 				}
-				erDoctor.Tireness -= 10;
+				erDoctor.Tireness -= erTireness;
 			}
 		}
     }

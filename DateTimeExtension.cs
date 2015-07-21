@@ -14,8 +14,12 @@ namespace DrWayne {
 			return _holidays.Contains(d);
 		}
 		
+		public static bool IsHoliday(this DateTime d) {
+			return _holidays.Contains(d) || d.DayOfWeek == DayOfWeek.Saturday || d.DayOfWeek == DayOfWeek.Sunday;
+		}
+		
 		public static bool NeedOPD(this DateTime d) {
 			return _holidays.Contains(d) || d.DayOfWeek == DayOfWeek.Saturday;
-		}
+		}		
 	}
 }
