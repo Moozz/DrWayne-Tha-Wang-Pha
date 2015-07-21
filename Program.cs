@@ -23,7 +23,8 @@ namespace DrWayne {
 			
 			_doctorList = new List<Doctor> { did, nui, ja, bean, nong1, golf };
 			
-			Solve(new WayneTable(year, month));
+			var wayneTable = new WayneTable(year, month);
+			Solve(wayneTable);
         }
 
 		public static void Solve(WayneTable wayneTable) {
