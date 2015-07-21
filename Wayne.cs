@@ -25,10 +25,18 @@ namespace DrWayne {
 	}
 	
 	public class WayneTable {
-		public WayneTable() {
+		public WayneTable(int year, int month) {
 			_wayneTable = new List<Wayne>();
+			if (month < 1 || month > 12)
+				throw new Exception("Month must be 1-12");
+			Month = month;
+			Year = year;
 		}
 		public List<Wayne> _wayneTable;
+		
+		public int Month { get; private set; }
+		
+		public int Year { get; private set; }
 		
 		public bool AddWayneIfAcceptable(Wayne wayne) {
 			if (wayne.IsAcceptable() && 
@@ -56,9 +64,13 @@ namespace DrWayne {
 		}
 		
 		public WayneTable Copy() {
-			var wayneTableCopy = new WayneTable();
+			var wayneTableCopy = new WayneTable(Year, Month);
 			wayneTableCopy._wayneTable = this._wayneTable.ToList();
 			return wayneTableCopy;
+		}
+		
+		public bool IsDone() {
+			return _wayneTable.Count == DateTime.DaysInMonth(Year, Month);
 		}
 		
 		private bool IsThisDoctorAtERYesterday(Doctor d) {

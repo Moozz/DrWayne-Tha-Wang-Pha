@@ -6,49 +6,64 @@ namespace DrWayne {
     public class Program {
 		private static List<Doctor> _doctorList;
         public static void Main(string[] args) {
-            var did = new Doctor("P' Did", DoctorExperience.Oldie, 0.4);
+            var did = new Doctor("P' Did", DoctorExperience.Oldie);
 			var nui = new Doctor("P' Nui", DoctorExperience.Oldie);
 			var ja = new Doctor("Ja+", DoctorExperience.Intern3);
 			var bean = new Doctor("Bean", DoctorExperience.Intern3);
-			var pua = new Doctor("Pua", DoctorExperience.Intern1);
+			var nong1 = new Doctor("nong1", DoctorExperience.Intern1);
 			var golf = new Doctor("Golf", DoctorExperience.Intern1);
 			
-			nui.RegisterAbsence(DateTime.Parse("13 Jul 2015"));
-			nui.RegisterAbsence(DateTime.Parse("22 Jul 2015"));
-			nui.RegisterAbsence(DateTime.Parse("23 Jul 2015"));
-			nui.RegisterAbsence(DateTime.Parse("24 Jul 2015"));
+			var year = 2015;
+			var month = 8;
 			
-			ja.RegisterAbsence(DateTime.Parse("18 Jul 2015"));
-			ja.RegisterAbsence(DateTime.Parse("19 Jul 2015"));
-			ja.RegisterAbsence(DateTime.Parse("31 Jul 2015"));
+			nui.RegisterAbsence(DateTime.Parse("5 Aug 2015"));
+			nui.RegisterAbsence(DateTime.Parse("6 Aug 2015"));
 			
-			pua.RegisterAbsence(DateTime.Parse("31 Jul 2015"));
+			ja.RegisterAbsence(DateTime.Parse("1 Aug 2015"));
+			ja.RegisterAbsence(DateTime.Parse("2 Aug 2015"));
+			ja.RegisterAbsence(DateTime.Parse("3 Aug 2015"));
+			ja.RegisterAbsence(DateTime.Parse("4 Aug 2015"));
+			ja.RegisterAbsence(DateTime.Parse("5 Aug 2015"));
+			ja.RegisterAbsence(DateTime.Parse("6 Aug 2015"));
+			ja.RegisterAbsence(DateTime.Parse("7 Aug 2015"));
+			ja.RegisterAbsence(DateTime.Parse("8 Aug 2015"));
+			ja.RegisterAbsence(DateTime.Parse("9 Aug 2015"));
+			ja.RegisterAbsence(DateTime.Parse("25 Aug 2015"));
+			ja.RegisterAbsence(DateTime.Parse("26 Aug 2015"));
+			ja.RegisterAbsence(DateTime.Parse("27 Aug 2015"));
+			ja.RegisterAbsence(DateTime.Parse("28 Aug 2015"));
 			
-			did.RegisterAbsence(DateTime.Parse("18 Jul 2015"));
-			did.RegisterAbsence(DateTime.Parse("20 Jul 2015"));
-			did.RegisterAbsence(DateTime.Parse("21 Jul 2015"));
-			did.RegisterAbsence(DateTime.Parse("22 Jul 2015"));
-			did.RegisterAbsence(DateTime.Parse("23 Jul 2015"));
+			bean.RegisterAbsence(DateTime.Parse("2 Aug 2015"));
+			bean.RegisterAbsence(DateTime.Parse("9 Aug 2015"));
+			bean.RegisterAbsence(DateTime.Parse("10 Aug 2015"));
+			bean.RegisterAbsence(DateTime.Parse("16 Aug 2015"));
+			bean.RegisterAbsence(DateTime.Parse("17 Aug 2015"));
+			bean.RegisterAbsence(DateTime.Parse("18 Aug 2015"));
+			bean.RegisterAbsence(DateTime.Parse("19 Aug 2015"));
+			bean.RegisterAbsence(DateTime.Parse("20 Aug 2015"));
+			bean.RegisterAbsence(DateTime.Parse("21 Aug 2015"));
+			bean.RegisterAbsence(DateTime.Parse("22 Aug 2015"));
 			
-			_doctorList = new List<Doctor> { did, nui, ja, bean, pua, golf };
+			did.RegisterAbsence(DateTime.Parse("11 Jul 2015"));
+			did.RegisterAbsence(DateTime.Parse("12 Jul 2015"));
+			did.RegisterAbsence(DateTime.Parse("13 Jul 2015"));
+			did.RegisterAbsence(DateTime.Parse("14 Jul 2015"));
+			did.RegisterAbsence(DateTime.Parse("16 Jul 2015"));
 			
-			Solve(1, new WayneTable());
+			_doctorList = new List<Doctor> { did, nui, ja, bean, nong1, golf };
 			
-			//  using (var t = Task.Run(() => Solve(1, doctorList, new WayneTable()))) {
-			//  	t.Wait();
-			//  	Console.WriteLine(t.Status);
-			//  }
+			Solve(1, new WayneTable(year, month));
         }
 
 		public static void Solve(int day, WayneTable wayneTable) {
-			if (day >= 31) {
+			if (wayneTable.IsDone()) {
 				Console.WriteLine("{0}", wayneTable);
 				Console.WriteLine("Tireness level at the end of the month");
 				Console.WriteLine(string.Join("\n", _doctorList.Select(x => x.Name + " : " + x.Tireness)));
 				Console.ReadLine();
 				return;
 			}
-			var currentDate = new DateTime(2015, 7, day);
+			var currentDate = new DateTime(wayneTable.Year, wayneTable.Month, day);
 			var isSaturday = currentDate.DayOfWeek == DayOfWeek.Saturday;			
 			var wayne = new Wayne(currentDate);
 			var rnd = new Random();
