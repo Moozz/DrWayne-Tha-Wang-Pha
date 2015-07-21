@@ -73,6 +73,10 @@ namespace DrWayne {
 			return _wayneTable.Count == DateTime.DaysInMonth(Year, Month);
 		}
 		
+		public int GetLastWayneDay() {
+			return _wayneTable.Count;
+		}
+		
 		private bool IsThisDoctorAtERYesterday(Doctor d) {
 			return _wayneTable.Count > 0 && _wayneTable.Last().ERDoctor == d;
 		}

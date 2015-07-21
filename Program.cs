@@ -52,10 +52,10 @@ namespace DrWayne {
 			
 			_doctorList = new List<Doctor> { did, nui, ja, bean, nong1, golf };
 			
-			Solve(1, new WayneTable(year, month));
+			Solve(new WayneTable(year, month));
         }
 
-		public static void Solve(int day, WayneTable wayneTable) {
+		public static void Solve(WayneTable wayneTable) {
 			if (wayneTable.IsDone()) {
 				Console.WriteLine("{0}", wayneTable);
 				Console.WriteLine("Tireness level at the end of the month");
@@ -63,7 +63,7 @@ namespace DrWayne {
 				Console.ReadLine();
 				return;
 			}
-			var currentDate = new DateTime(wayneTable.Year, wayneTable.Month, day);
+			var currentDate = new DateTime(wayneTable.Year, wayneTable.Month, wayneTable.GetLastWayneDay() + 1);
 			var isSaturday = currentDate.DayOfWeek == DayOfWeek.Saturday;			
 			var wayne = new Wayne(currentDate);
 			var rnd = new Random();
@@ -80,7 +80,7 @@ namespace DrWayne {
 					if (!isSaturday) {
 						var wayneTableCopy = wayneTable.Copy();
 						if (wayneTableCopy.AddWayneIfAcceptable(wayne)) {
-							Solve(day + 1, wayneTableCopy);
+							Solve(wayneTableCopy);
 						}
 					}
 					else {
@@ -89,7 +89,7 @@ namespace DrWayne {
 							OPDDoctor.Tireness += 5;
 							var wayneTableCopy = wayneTable.Copy();
 							if (wayneTableCopy.AddWayneIfAcceptable(wayne)) {
-								Solve(day + 1, wayneTableCopy);
+								Solve(wayneTableCopy);
 							}
 							OPDDoctor.Tireness -= 5;
 						}
