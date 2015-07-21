@@ -32,10 +32,11 @@ namespace DrWayne {
 		
 		public override string ToString() {
 			var sb = new StringBuilder();
-			sb.AppendFormat("{0} {1, 10} {2, 10}, {3, 10}\n", "Date", "ER", "WARD", "OPD");
+			sb.AppendFormat("Wayne of Month {0}, {1}\n", Month, Year);
+			sb.AppendFormat("{0, -7} {1, 10} {2, 10} {3, 10}\n", "Date", "ER", "WARD", "OPD");
 			foreach (var wayne in _wayneTable) {
-				sb.AppendFormat("{0} {1, 10} {2, 10}, {3, 10}\n", 
-					wayne.WayneDate.ToString("dd MMM yyyy"), 
+				sb.AppendFormat("{0, -7} {1, 10} {2, 10} {3, 10}\n", 
+					wayne.WayneDate.ToString("ddd dd"), 
 					wayne.ERDoctor.Name, 
 					wayne.WardDoctor.Name, 
 					wayne.OPDDoctor == null ? "-" : wayne.OPDDoctor.Name);
