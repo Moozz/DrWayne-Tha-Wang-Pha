@@ -16,39 +16,10 @@ namespace DrWayne {
 			var year = 2015;
 			var month = 8;
 			
-			nui.RegisterAbsence(DateTime.Parse("5 Aug 2015"));
-			nui.RegisterAbsence(DateTime.Parse("6 Aug 2015"));
-			
-			ja.RegisterAbsence(DateTime.Parse("1 Aug 2015"));
-			ja.RegisterAbsence(DateTime.Parse("2 Aug 2015"));
-			ja.RegisterAbsence(DateTime.Parse("3 Aug 2015"));
-			ja.RegisterAbsence(DateTime.Parse("4 Aug 2015"));
-			ja.RegisterAbsence(DateTime.Parse("5 Aug 2015"));
-			ja.RegisterAbsence(DateTime.Parse("6 Aug 2015"));
-			ja.RegisterAbsence(DateTime.Parse("7 Aug 2015"));
-			ja.RegisterAbsence(DateTime.Parse("8 Aug 2015"));
-			ja.RegisterAbsence(DateTime.Parse("9 Aug 2015"));
-			ja.RegisterAbsence(DateTime.Parse("25 Aug 2015"));
-			ja.RegisterAbsence(DateTime.Parse("26 Aug 2015"));
-			ja.RegisterAbsence(DateTime.Parse("27 Aug 2015"));
-			ja.RegisterAbsence(DateTime.Parse("28 Aug 2015"));
-			
-			bean.RegisterAbsence(DateTime.Parse("2 Aug 2015"));
-			bean.RegisterAbsence(DateTime.Parse("9 Aug 2015"));
-			bean.RegisterAbsence(DateTime.Parse("10 Aug 2015"));
-			bean.RegisterAbsence(DateTime.Parse("16 Aug 2015"));
-			bean.RegisterAbsence(DateTime.Parse("17 Aug 2015"));
-			bean.RegisterAbsence(DateTime.Parse("18 Aug 2015"));
-			bean.RegisterAbsence(DateTime.Parse("19 Aug 2015"));
-			bean.RegisterAbsence(DateTime.Parse("20 Aug 2015"));
-			bean.RegisterAbsence(DateTime.Parse("21 Aug 2015"));
-			bean.RegisterAbsence(DateTime.Parse("22 Aug 2015"));
-			
-			did.RegisterAbsence(DateTime.Parse("11 Jul 2015"));
-			did.RegisterAbsence(DateTime.Parse("12 Jul 2015"));
-			did.RegisterAbsence(DateTime.Parse("13 Jul 2015"));
-			did.RegisterAbsence(DateTime.Parse("14 Jul 2015"));
-			did.RegisterAbsence(DateTime.Parse("16 Jul 2015"));
+			nui.RegisterAbsence(year, month, new List<int>{ 5 , 6 });
+			ja.RegisterAbsence(year, month, new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 25, 26, 27, 28 });
+			bean.RegisterAbsence(year, month, new List<int> {2, 9, 10, 16, 17, 18, 19, 20, 21, 22 });
+			did.RegisterAbsence(year, month, new List<int> { 11, 12, 13, 14, 16 });
 			
 			_doctorList = new List<Doctor> { did, nui, ja, bean, nong1, golf };
 			

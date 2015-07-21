@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DrWayne {
     public enum DoctorExperience {
@@ -27,6 +28,12 @@ namespace DrWayne {
         
         public void RegisterAbsence(DateTime date) {
             AbsenceList.Add(date);
+        }
+        
+        public void RegisterAbsence(int year, int month, List<int> day) {
+            day.Select(d => new DateTime(year, month, d))
+                .ToList()
+                .ForEach(d => AbsenceList.Add(d));
         }
     }
 }
