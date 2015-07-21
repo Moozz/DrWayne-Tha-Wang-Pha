@@ -23,7 +23,7 @@ namespace DrWayne {
 			
 			_doctorList = new List<Doctor> { did, nui, ja, bean, nong1, golf };
 			
-			DateTimeExtension.SetAsHoliday(new DateTime(year, month, 12));
+			DateTimeExtension.AddSpecialHoliday(new DateTime(year, month, 12));
 			
 			var wayneTable = new WayneTable(year, month);
 			Solve(wayneTable);

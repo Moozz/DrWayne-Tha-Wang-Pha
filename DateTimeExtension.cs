@@ -6,7 +6,7 @@ namespace DrWayne {
 		
 		private static HashSet<DateTime> _holidays = new HashSet<DateTime>();
 		
-		public static void SetAsHoliday(DateTime d) {
+		public static void AddSpecialHoliday(DateTime d) {
 			_holidays.Add(d);
 		}
 		
