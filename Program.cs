@@ -10,7 +10,7 @@ namespace DrWayne {
 			var nui = new Doctor("P' Nui", DoctorExperience.Oldie);
 			var ja = new Doctor("Ja+", DoctorExperience.Intern3);
 			var bean = new Doctor("Bean", DoctorExperience.Intern3);
-			var nong1 = new Doctor("nong1", DoctorExperience.Intern1);
+			var kao = new Doctor("Kao", DoctorExperience.Intern1);
 			var golf = new Doctor("Golf", DoctorExperience.Intern1);
 			
 			var year = 2015;
@@ -20,8 +20,9 @@ namespace DrWayne {
 			ja.RegisterAbsence(year, month, new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 25, 26, 27, 28 });
 			bean.RegisterAbsence(year, month, new List<int> {2, 9, 10, 16, 17, 18, 19, 20, 21, 22 });
 			did.RegisterAbsence(year, month, new List<int> { 11, 12, 13, 14, 16 });
+			kao.RegisterAbsence(year, month, new List<int> { 1, 2, 15, 16 });
 			
-			_doctorList = new List<Doctor> { did, nui, ja, bean, nong1, golf };
+			_doctorList = new List<Doctor> { did, nui, ja, bean, kao, golf };
 			
 			DateTimeExtension.AddSpecialHoliday(new DateTime(year, month, 12));
 			
