@@ -15,6 +15,9 @@ namespace DrWayne {
             Name = name;
             Exp = exp;
             AbsenceList = new HashSet<DateTime>();
+            ERWayne = new HashSet<Wayne>();
+            WardWayne = new HashSet<Wayne>();
+            OPDWayne = new HashSet<Wayne>();
             Tireness = 0;
             Factor = factor;
         }
@@ -23,6 +26,10 @@ namespace DrWayne {
         public DoctorExperience Exp { get; private set; }
         public HashSet<DateTime> AbsenceList { get; private set; }
         public int Tireness { get; set; }
+        
+        public HashSet<Wayne> ERWayne { get; private set; }
+        public HashSet<Wayne> WardWayne { get; private set; }
+        public HashSet<Wayne> OPDWayne { get; private set; }
         
         public double Factor { get; private set; }
         

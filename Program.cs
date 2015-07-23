@@ -26,7 +26,7 @@ namespace DrWayne {
 			
 			DateTimeExtension.AddSpecialHoliday(new DateTime(year, month, 12));
 			
-			var wayneTable = new WayneTable(year, month);
+			var wayneTable = new WayneTable(_doctorList, year, month);
 			Solve(wayneTable);
         }
 
@@ -58,10 +58,12 @@ namespace DrWayne {
 											.ToList();					
 			foreach (var erDoctor in doctorListCopy) {
 				wayne.ERDoctor = erDoctor;
+				erDoctor.ERWayne.Add(wayne);
 				erDoctor.Tireness += erTireness;
-				foreach (var wardDocter in doctorListCopy.Where(x => x != erDoctor)) {
-					wayne.WardDoctor = wardDocter;
-					wardDocter.Tireness += wardTireness;
+				foreach (var wardDoctor in doctorListCopy.Where(x => x != erDoctor)) {
+					wayne.WardDoctor = wardDoctor;
+					wardDoctor.WardWayne.Add(wayne);
+					wardDoctor.Tireness += wardTireness;
 					if (!currentDate.NeedOPD()) {
 						var wayneTableCopy = wayneTable.Copy();
 						if (wayneTableCopy.AddWayneIfAcceptable(wayne)) {
@@ -69,19 +71,23 @@ namespace DrWayne {
 						}
 					}
 					else {
-						foreach (var OPDDoctor in doctorListCopy.Where(x => x != erDoctor && x != wardDocter)) {
+						foreach (var OPDDoctor in doctorListCopy.Where(x => x != erDoctor && x != wardDoctor)) {
 							wayne.OPDDoctor = OPDDoctor;
+							OPDDoctor.OPDWayne.Add(wayne);
 							OPDDoctor.Tireness += OPDTireness;
 							var wayneTableCopy = wayneTable.Copy();
 							if (wayneTableCopy.AddWayneIfAcceptable(wayne)) {
 								Solve(wayneTableCopy);
 							}
 							OPDDoctor.Tireness -= OPDTireness;
+							OPDDoctor.OPDWayne.Remove(wayne);
 						}
 					}
-					wardDocter.Tireness -= wardTireness;
+					wardDoctor.Tireness -= wardTireness;
+					wardDoctor.WardWayne.Remove(wayne);
 				}
 				erDoctor.Tireness -= erTireness;
+				erDoctor.ERWayne.Remove(wayne);
 			}
 		}
     }

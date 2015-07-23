@@ -5,8 +5,9 @@ using System.Text;
 
 namespace DrWayne {
 	public class WayneTable {
-		public WayneTable(int year, int month) {
+		public WayneTable(List<Doctor> doctorList, int year, int month) {
 			_wayneTable = new List<Wayne>();
+			_doctorList = doctorList;
 			if (month < 1 || month > 12)
 				throw new Exception("Month must be 1-12");
 			Month = month;
@@ -18,7 +19,8 @@ namespace DrWayne {
 				_totalWorkingDay += new DateTime(year, month, i).IsHoliday() ? 0 : 1;
 			}
 		}
-		public List<Wayne> _wayneTable;
+		private List<Wayne> _wayneTable;
+		private List<Doctor> _doctorList;
 		
 		public int Month { get; private set; }
 		
@@ -54,7 +56,7 @@ namespace DrWayne {
 		}
 		
 		public WayneTable Copy() {
-			var wayneTableCopy = new WayneTable(Year, Month);
+			var wayneTableCopy = new WayneTable(_doctorList, Year, Month);
 			wayneTableCopy._wayneTable = this._wayneTable.ToList();
 			return wayneTableCopy;
 		}
@@ -81,54 +83,33 @@ namespace DrWayne {
 		}
 		
 		public bool FairEnough() {
-			var wayneGroupByDoctor = _wayneTable.SelectMany(x => new[] {
-					new {
-						Doctor = x.ERDoctor,
-						WayneType = Wayne.Type.ER,
-						Day = x.WayneDate
-					},
-					new {
-						Doctor = x.WardDoctor,
-						WayneType = Wayne.Type.Ward,
-						Day = x.WayneDate
-					},
-					new {
-						Doctor = x.OPDDoctor,
-						WayneType = Wayne.Type.OPD,
-						Day = x.WayneDate
-					}
+			var restList = _doctorList
+				.Select(x => new {
+					Name = x.Name,
+					WorkDayList = x.ERWayne.Concat(x.WardWayne).Concat(x.OPDWayne).Select(y => y.WayneDate).Distinct()
 				})
-				.Where(x => x.Doctor != null)
-				.GroupBy(x => x.Doctor);
-				
-			var restList = wayneGroupByDoctor.Select(g => new {
-				  	Doctor = g.Key,
-				  	RestOnWorkingDayCount = _totalWorkingDay - g.Select(x => x.Day).Distinct().Count(x => !x.IsHoliday()),
-					RestOnHolidayCount = (_totalDaysInMonth - _totalWorkingDay) - g.Select(x => x.Day).Distinct().Count(x => x.IsHoliday())
+				.Select(x => new {
+				  	Name = x.Name,
+				  	RestOnWorkingDayCount = _totalWorkingDay - x.WorkDayList.Count(y => !y.IsHoliday()),
+					RestOnHolidayCount = (_totalDaysInMonth - _totalWorkingDay) - x.WorkDayList.Count(y => y.IsHoliday())
 				}).ToList();
-			var countList =	wayneGroupByDoctor.Select(g => new {
-					Doctor = g.Key,
-					ERCount = g.Count(x => x.WayneType == Wayne.Type.ER),
-					WardCount = g.Count(x => x.WayneType == Wayne.Type.Ward),
-					OPDCount = g.Count(x => x.WayneType == Wayne.Type.OPD)
-				}).ToList();
-			
-			if (countList.Max(x => x.ERCount) - countList.Min(x => x.ERCount) <= 2 &&
-				countList.Max(x => x.WardCount) - countList.Min(x => x.WardCount) <= 2 &&
+			if (_doctorList.Max(x => x.ERWayne.Count()) - _doctorList.Min(x => x.ERWayne.Count()) <= 2 &&
+				_doctorList.Max(x => x.WardWayne.Count()) - _doctorList.Min(x => x.WardWayne.Count()) <= 3 &&
 				restList.Max(x => x.RestOnHolidayCount) - restList.Min(x => x.RestOnHolidayCount) <= 2 && 
-				restList.Max(x => x.RestOnWorkingDayCount) - restList.Min(x => x.RestOnWorkingDayCount) <= 4) {
+			  	restList.Max(x => x.RestOnWorkingDayCount) - restList.Min(x => x.RestOnWorkingDayCount) <= 4) {
+
 				Console.WriteLine("{0, -10} : {1, 5} {2, 5} {3, 5}", "Name", "ER", "Ward", "OPD");
-				foreach (var p in countList) {
-					Console.WriteLine("{0, -10} : {1, 5} {2, 5} {3, 5}", p.Doctor.Name, p.ERCount, p.WardCount, p.OPDCount);	
-				}
+		  		foreach (var p in _doctorList) {
+		  			Console.WriteLine("{0, -10} : {1, 5} {2, 5} {3, 5}", p.Name, p.ERWayne.Count(), p.WardWayne.Count(), p.OPDWayne.Count());	
+		  		}
 				Console.WriteLine();
 				Console.WriteLine("{0, -8} : {1, 10} {2, 10}", "Name", "RestWDay", "RestHoliday");
 				foreach (var p in restList) {
-					Console.WriteLine("{0, -8} : {1, 10} {2, 10}", p.Doctor.Name,
+					Console.WriteLine("{0, -8} : {1, 10} {2, 10}", p.Name,
 						 p.RestOnWorkingDayCount,
 						 p.RestOnHolidayCount);
 				}
-				return true;	
+				return true;
 			}
 			return false;
 		}
