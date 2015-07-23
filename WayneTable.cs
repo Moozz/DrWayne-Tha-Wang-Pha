@@ -70,5 +70,50 @@ namespace DrWayne {
 			wayneTableCopy.Reverse();
 			return wayneTableCopy.Take(2).All(x => x.ERDoctor == d || x.WardDoctor == d);
 		}
+		
+		public bool FairEnough() {
+			var wayneGroupByDoctor = _wayneTable.SelectMany(x => new[] {
+					new {
+						Doctor = x.ERDoctor,
+						WayneType = Wayne.Type.ER,
+						Day = x.WayneDate
+					},
+					new {
+						Doctor = x.WardDoctor,
+						WayneType = Wayne.Type.Ward,
+						Day = x.WayneDate
+					},
+					new {
+						Doctor = x.OPDDoctor,
+						WayneType = Wayne.Type.OPD,
+						Day = x.WayneDate
+					}
+				})
+				.Where(x => x.Doctor != null)
+				.GroupBy(x => x.Doctor);
+				
+			//  var restList = wayneGroupByDoctor.Select(g => new {
+			//  	Doctor = g.Key,
+			//  	RestOnHolidayCount = g.Count(x => x.Day.IsHoliday())
+			//  });
+				
+			var countList =	wayneGroupByDoctor.Select(g => new {
+					Doctor = g.Key,
+					ERCount = g.Count(x => x.WayneType == Wayne.Type.ER),
+					WardCount = g.Count(x => x.WayneType == Wayne.Type.Ward),
+					OPDCount = g.Count(x => x.WayneType == Wayne.Type.OPD)
+				})
+				.ToList();
+			
+			if (countList.Max(x => x.ERCount) - countList.Min(x => x.ERCount) <= 2 &&
+				countList.Max(x => x.WardCount) - countList.Min(x => x.WardCount) <= 2) {
+				Console.WriteLine("{0, -10} : {1, 5} {2, 5} {3, 5}", "Name", "ER", "Ward", "OPD");
+				foreach (var p in countList) {
+					Console.WriteLine("{0, -10} : {1, 5} {2, 5} {3, 5}", p.Doctor.Name, p.ERCount, p.WardCount, p.OPDCount);	
+				}	
+				return true;	
+			}
+			return false;
+		}
 	}	
 }

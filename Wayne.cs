@@ -2,6 +2,12 @@ using System;
 
 namespace DrWayne {
 	public class Wayne {
+		public enum Type {
+			ER,
+			Ward,
+			OPD
+		}
+		
 		public Wayne(DateTime wayneDate) {
 			WayneDate = wayneDate;
 		}

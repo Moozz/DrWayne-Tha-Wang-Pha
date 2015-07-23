@@ -32,6 +32,9 @@ namespace DrWayne {
 
 		public static void Solve(WayneTable wayneTable) {
 			if (wayneTable.IsDone()) {
+				if (!wayneTable.FairEnough()) {
+					return;
+				}
 				Console.WriteLine("{0}", wayneTable);
 				Console.WriteLine("Tireness level at the end of the month");
 				Console.WriteLine(string.Join("\n", _doctorList.Select(x => x.Name + " : " + x.Tireness)));
