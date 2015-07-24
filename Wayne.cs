@@ -8,8 +8,11 @@ namespace DrWayne {
 			OPD
 		}
 		
-		public Wayne(DateTime wayneDate) {
+		public Wayne(DateTime wayneDate, Doctor erDoctor = null, Doctor wardDoctor = null, Doctor opdDoctor = null) {
 			WayneDate = wayneDate;
+			ERDoctor = erDoctor;
+			WardDoctor = wardDoctor;
+			OPDDoctor = opdDoctor;
 		}
 		
 		public DateTime WayneDate { get; set; }
