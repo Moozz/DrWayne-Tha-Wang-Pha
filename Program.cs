@@ -20,7 +20,8 @@ namespace DrWayne {
 			ja.RegisterAbsence(year, month, new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 25, 26, 27, 28 });
 			bean.RegisterAbsence(year, month, new List<int> {2, 9, 10, 16, 17, 18, 19, 20, 21, 22 });
 			did.RegisterAbsence(year, month, new List<int> { 11, 12, 13, 14, 16 });
-			kao.RegisterAbsence(year, month, new List<int> { 1, 2, 15, 16 });
+			kao.RegisterAbsence(year, month, new List<int> { 1, 2, 14, 15, 16, 31 });
+			golf.RegisterAbsence(year, month, new List<int> { 31 });
 			
 			_doctorList = new List<Doctor> { did, nui, ja, bean, kao, golf };
 			
