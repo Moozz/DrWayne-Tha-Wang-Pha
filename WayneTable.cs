@@ -66,6 +66,11 @@ namespace DrWayne {
 		}
 		
 		public void ShowResult() {
+			Console.WriteLine("{0, -10} : {1, 5} {2, 5} {3, 5}", "Name", "ER", "Ward", "OPD");
+	  		foreach (var p in _doctorList) {
+	  			Console.WriteLine("{0, -10} : {1, 5} {2, 5} {3, 5}", p.Name, p.ERWayne.Count(), p.WardWayne.Count(), p.OPDWayne.Count());	
+	  		}
+			
 			Console.WriteLine("{0}", ToString());
 			Console.WriteLine("Tireness level at the end of the month");
 			Console.WriteLine(string.Join("\n", _doctorList.Select(x => x.Name + " : " + x.Tireness)));
@@ -92,7 +97,7 @@ namespace DrWayne {
 			var restList = _doctorList
 				.Select(x => new {
 					Name = x.Name,
-					WorkDayList = x.ERWayne.Concat(x.WardWayne).Concat(x.OPDWayne).Distinct()
+					WorkDayList = x.GetAllWayneDate()
 				})
 				.Select(x => new {
 				  	Name = x.Name,
@@ -103,11 +108,7 @@ namespace DrWayne {
 				_doctorList.Max(x => x.WardWayne.Count()) - _doctorList.Min(x => x.WardWayne.Count()) <= 2 &&
 				restList.Max(x => x.RestOnHolidayCount) - restList.Min(x => x.RestOnHolidayCount) <= 2 && 
 			  	restList.Max(x => x.RestOnWorkingDayCount) - restList.Min(x => x.RestOnWorkingDayCount) <= 2) {
-
-				Console.WriteLine("{0, -10} : {1, 5} {2, 5} {3, 5}", "Name", "ER", "Ward", "OPD");
-		  		foreach (var p in _doctorList) {
-		  			Console.WriteLine("{0, -10} : {1, 5} {2, 5} {3, 5}", p.Name, p.ERWayne.Count(), p.WardWayne.Count(), p.OPDWayne.Count());	
-		  		}
+				
 				Console.WriteLine();
 				Console.WriteLine("{0, -8} : {1, 10} {2, 10}", "Name", "RestWDay", "RestHoliday");
 				foreach (var p in restList) {

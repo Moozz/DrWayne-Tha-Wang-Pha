@@ -49,16 +49,19 @@ namespace DrWayne {
             return !ERWayne.Contains(yesterday) && !ERWayne.Contains(tomorrow);
         }
         
-        
 		public bool AmInWayneMoreThanTwoConsecutiveDays(DateTime d) {
             var theDayBeforeYesterday   = d.AddDays(-2);
             var yesterday               = d.AddDays(-1);
             var tomorrow                = d.AddDays(1);
             var theDayAfterTomorrow     = d.AddDays(2);
-            var wayneDay = ERWayne.Concat(WardWayne).Concat(OPDWayne);
+            var wayneDay = GetAllWayneDate();
             return (wayneDay.Contains(theDayBeforeYesterday) && wayneDay.Contains(yesterday)) ||
                    (wayneDay.Contains(yesterday) && wayneDay.Contains(tomorrow)) ||
                    (wayneDay.Contains(tomorrow) && wayneDay.Contains(theDayAfterTomorrow));
 		}
+        
+        public List<DateTime> GetAllWayneDate() {
+            return ERWayne.Concat(WardWayne).Concat(OPDWayne).Distinct().ToList();
+        }
     }
 }
