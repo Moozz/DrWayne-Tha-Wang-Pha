@@ -113,5 +113,67 @@ namespace DrWayne {
 			}
 			return false;
 		}
+		
+		public void Fill() {
+			if (IsDone()) {
+				//  if (!FairEnough()) {
+				//  	return;
+				//  }
+				Console.WriteLine("{0}", ToString());
+				Console.WriteLine("Tireness level at the end of the month");
+				Console.WriteLine(string.Join("\n", _doctorList.Select(x => x.Name + " : " + x.Tireness)));
+				Console.WriteLine("=== END ===\n");
+				//Console.ReadLine();
+				return;
+			}
+			var currentDate = new DateTime(Year, Month, GetLastWayneDay() + 1);
+			var erTireness = 10;
+			var wardTireness = 5;
+			var OPDTireness = 4;
+			if (currentDate.IsHoliday()) {
+				erTireness = (erTireness * 3) / 2;
+				wardTireness = (wardTireness * 3) / 2;
+			}
+			
+			var wayne = new Wayne(currentDate);
+			var rnd = new Random();
+			var doctorListCopy = _doctorList.Where(x => !x.AbsenceList.Contains(currentDate))
+											.OrderBy(x => x.Tireness / x.Factor)
+											.ThenBy(x => rnd.Next())
+											.ToList();					
+			foreach (var erDoctor in doctorListCopy) {
+				wayne.ERDoctor = erDoctor;
+				erDoctor.ERWayne.Add(wayne);
+				erDoctor.Tireness += erTireness;
+				foreach (var wardDoctor in doctorListCopy.Where(x => x != erDoctor)) {
+					wayne.WardDoctor = wardDoctor;
+					wardDoctor.WardWayne.Add(wayne);
+					wardDoctor.Tireness += wardTireness;
+					if (!currentDate.NeedOPD()) {
+						var wayneTableCopy = Copy();
+						if (wayneTableCopy.AddWayneIfAcceptable(wayne)) {
+							wayneTableCopy.Fill();
+						}
+					}
+					else {
+						foreach (var OPDDoctor in doctorListCopy.Where(x => x != erDoctor && x != wardDoctor)) {
+							wayne.OPDDoctor = OPDDoctor;
+							OPDDoctor.OPDWayne.Add(wayne);
+							OPDDoctor.Tireness += OPDTireness;
+							var wayneTableCopy = Copy();
+							if (wayneTableCopy.AddWayneIfAcceptable(wayne)) {
+								wayneTableCopy.Fill();
+							}
+							OPDDoctor.Tireness -= OPDTireness;
+							OPDDoctor.OPDWayne.Remove(wayne);
+						}
+					}
+					wardDoctor.Tireness -= wardTireness;
+					wardDoctor.WardWayne.Remove(wayne);
+				}
+				erDoctor.Tireness -= erTireness;
+				erDoctor.ERWayne.Remove(wayne);
+			}
+		}
 	}	
 }

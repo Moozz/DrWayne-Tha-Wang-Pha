@@ -26,69 +26,9 @@ namespace DrWayne {
 			
 			DateTimeExtension.AddSpecialHoliday(new DateTime(year, month, 12));
 			
+			Console.WriteLine("Thinking...");
 			var wayneTable = new WayneTable(_doctorList, year, month);
-			Solve(wayneTable);
+			wayneTable.Fill();
         }
-
-		public static void Solve(WayneTable wayneTable) {
-			if (wayneTable.IsDone()) {
-				if (!wayneTable.FairEnough()) {
-					return;
-				}
-				Console.WriteLine("{0}", wayneTable);
-				Console.WriteLine("Tireness level at the end of the month");
-				Console.WriteLine(string.Join("\n", _doctorList.Select(x => x.Name + " : " + x.Tireness)));
-				Console.ReadLine();
-				return;
-			}
-			var currentDate = new DateTime(wayneTable.Year, wayneTable.Month, wayneTable.GetLastWayneDay() + 1);
-			var erTireness = 10;
-			var wardTireness = 5;
-			var OPDTireness = 4;
-			if (currentDate.IsHoliday()) {
-				erTireness = (erTireness * 3) / 2;
-				wardTireness = (wardTireness * 3) / 2;
-			}
-			
-			var wayne = new Wayne(currentDate);
-			var rnd = new Random();
-			var doctorListCopy = _doctorList.Where(x => !x.AbsenceList.Contains(currentDate))
-											.OrderBy(x => x.Tireness / x.Factor)
-											.ThenBy(x => rnd.Next())
-											.ToList();					
-			foreach (var erDoctor in doctorListCopy) {
-				wayne.ERDoctor = erDoctor;
-				erDoctor.ERWayne.Add(wayne);
-				erDoctor.Tireness += erTireness;
-				foreach (var wardDoctor in doctorListCopy.Where(x => x != erDoctor)) {
-					wayne.WardDoctor = wardDoctor;
-					wardDoctor.WardWayne.Add(wayne);
-					wardDoctor.Tireness += wardTireness;
-					if (!currentDate.NeedOPD()) {
-						var wayneTableCopy = wayneTable.Copy();
-						if (wayneTableCopy.AddWayneIfAcceptable(wayne)) {
-							Solve(wayneTableCopy);
-						}
-					}
-					else {
-						foreach (var OPDDoctor in doctorListCopy.Where(x => x != erDoctor && x != wardDoctor)) {
-							wayne.OPDDoctor = OPDDoctor;
-							OPDDoctor.OPDWayne.Add(wayne);
-							OPDDoctor.Tireness += OPDTireness;
-							var wayneTableCopy = wayneTable.Copy();
-							if (wayneTableCopy.AddWayneIfAcceptable(wayne)) {
-								Solve(wayneTableCopy);
-							}
-							OPDDoctor.Tireness -= OPDTireness;
-							OPDDoctor.OPDWayne.Remove(wayne);
-						}
-					}
-					wardDoctor.Tireness -= wardTireness;
-					wardDoctor.WardWayne.Remove(wayne);
-				}
-				erDoctor.Tireness -= erTireness;
-				erDoctor.ERWayne.Remove(wayne);
-			}
-		}
     }
 }
