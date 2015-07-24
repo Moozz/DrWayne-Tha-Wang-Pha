@@ -55,17 +55,17 @@ namespace DrWayne {
 			return sb.ToString();
 		}
 		
-		public WayneTable Copy() {
+		private WayneTable Copy() {
 			var wayneTableCopy = new WayneTable(_doctorList, Year, Month);
 			wayneTableCopy._wayneTable = this._wayneTable.ToList();
 			return wayneTableCopy;
 		}
 		
-		public bool IsDone() {
+		private bool IsDone() {
 			return _wayneTable.Count == _totalDaysInMonth;
 		}
 		
-		public int GetLastWayneDay() {
+		private int GetLastWayneDay() {
 			return _wayneTable.Count;
 		}
 		
@@ -82,7 +82,7 @@ namespace DrWayne {
 			return wayneTableCopy.Take(2).All(x => x.ERDoctor == d || x.WardDoctor == d);
 		}
 		
-		public bool FairEnough() {
+		private bool FairEnough() {
 			var restList = _doctorList
 				.Select(x => new {
 					Name = x.Name,
