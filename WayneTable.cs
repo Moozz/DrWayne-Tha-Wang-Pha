@@ -82,8 +82,10 @@ namespace DrWayne {
 			return _wayneTable.Count == _totalDaysInMonth;
 		}
 		
-		private int GetLastWayneDay() {
-			return _wayneTable.Count;
+		private int GetFirstDayToFill() {
+			return Enumerable.Range(1, _totalDaysInMonth)
+							.Except(_wayneTable.Select(x => x.WayneDate.Day).OrderBy(x => x))
+							.Min() + 1;
 		}
 		
 		private bool FairEnough() {
@@ -120,11 +122,11 @@ namespace DrWayne {
 		
 		public void Fill() {
 			if (IsDone()) {
-				if (!FairEnough()) return;
+				//if (!FairEnough()) return;
 				ShowResult();
 				return;
 			}
-			var currentDate = new DateTime(Year, Month, GetLastWayneDay() + 1);
+			var currentDate = new DateTime(Year, Month, GetFirstDayToFill());
 			var erTireness = 10;
 			var wardTireness = 5;
 			var OPDTireness = 4;
