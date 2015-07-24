@@ -15,9 +15,9 @@ namespace DrWayne {
             Name = name;
             Exp = exp;
             AbsenceList = new HashSet<DateTime>();
-            ERWayne = new HashSet<Wayne>();
-            WardWayne = new HashSet<Wayne>();
-            OPDWayne = new HashSet<Wayne>();
+            ERWayne = new HashSet<DateTime>();
+            WardWayne = new HashSet<DateTime>();
+            OPDWayne = new HashSet<DateTime>();
             Tireness = 0;
             Factor = factor;
         }
@@ -27,9 +27,9 @@ namespace DrWayne {
         public HashSet<DateTime> AbsenceList { get; private set; }
         public int Tireness { get; set; }
         
-        public HashSet<Wayne> ERWayne { get; private set; }
-        public HashSet<Wayne> WardWayne { get; private set; }
-        public HashSet<Wayne> OPDWayne { get; private set; }
+        public HashSet<DateTime> ERWayne { get; private set; }
+        public HashSet<DateTime> WardWayne { get; private set; }
+        public HashSet<DateTime> OPDWayne { get; private set; }
         
         public double Factor { get; private set; }
         
@@ -42,5 +42,23 @@ namespace DrWayne {
                 .ToList()
                 .ForEach(d => AbsenceList.Add(d));
         }
+        
+        public bool AmIOKForERThisDay(DateTime d) {
+            var yesterday = d.AddDays(-1);
+            var tomorrow = d.AddDays(1);
+            return !ERWayne.Contains(yesterday) && !ERWayne.Contains(tomorrow);
+        }
+        
+        
+		public bool AmInWayneMoreThanTwoConsecutiveDays(DateTime d) {
+            var theDayBeforeYesterday   = d.AddDays(-2);
+            var yesterday               = d.AddDays(-1);
+            var tomorrow                = d.AddDays(1);
+            var theDayAfterTomorrow     = d.AddDays(2);
+            var wayneDay = ERWayne.Concat(WardWayne).Concat(OPDWayne);
+            return (wayneDay.Contains(theDayBeforeYesterday) && wayneDay.Contains(yesterday)) ||
+                   (wayneDay.Contains(yesterday) && wayneDay.Contains(tomorrow)) ||
+                   (wayneDay.Contains(tomorrow) && wayneDay.Contains(theDayAfterTomorrow));
+		}
     }
 }

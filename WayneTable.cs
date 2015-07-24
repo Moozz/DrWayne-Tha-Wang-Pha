@@ -30,15 +30,25 @@ namespace DrWayne {
 		private int _totalWorkingDay;
 		
 		private bool AddWayneIfAcceptable(Wayne wayne) {
-			if (wayne.IsAcceptable() && 
-				!IsThisDoctorAtERYesterday(wayne.ERDoctor) &&
-				!IsThisDoctorInWayneTheLastTwoDays(wayne.ERDoctor) &&
-				!IsThisDoctorInWayneTheLastTwoDays(wayne.WardDoctor) && 
-				(wayne.OPDDoctor == null || !IsThisDoctorInWayneTheLastTwoDays(wayne.OPDDoctor))) {
+			if (wayne.IsAcceptable()) { 
 				_wayneTable.Add(wayne);
 				return true;
 			}
 			return false;			
+		}
+		
+		public void AddFixWayne(Wayne wayne) {
+			if (wayne.ERDoctor == null ||
+				wayne.WardDoctor == null ||
+				(wayne.WayneDate.NeedOPD() && wayne.OPDDoctor == null))
+				throw new Exception("Your fixed wayne is not correct, please recheck it");
+			
+			_doctorList.First(x => x == wayne.ERDoctor).ERWayne.Add(wayne.WayneDate);
+			_doctorList.First(x => x == wayne.WardDoctor).WardWayne.Add(wayne.WayneDate);
+			if (wayne.WayneDate.NeedOPD())
+				_doctorList.First(x => x == wayne.OPDDoctor).OPDWayne.Add(wayne.WayneDate);
+
+			_wayneTable.Add(wayne);
 		}
 		
 		public override string ToString() {
@@ -76,24 +86,11 @@ namespace DrWayne {
 			return _wayneTable.Count;
 		}
 		
-		private bool IsThisDoctorAtERYesterday(Doctor d) {
-			return _wayneTable.Count > 0 && _wayneTable.Last().ERDoctor == d;
-		}
-		
-		private bool IsThisDoctorInWayneTheLastTwoDays(Doctor d) {
-			if (_wayneTable.Count < 2)
-				return false;
-
-			var wayneTableCopy = _wayneTable.ToList();
-			wayneTableCopy.Reverse();
-			return wayneTableCopy.Take(2).All(x => x.ERDoctor == d || x.WardDoctor == d);
-		}
-		
 		private bool FairEnough() {
 			var restList = _doctorList
 				.Select(x => new {
 					Name = x.Name,
-					WorkDayList = x.ERWayne.Concat(x.WardWayne).Concat(x.OPDWayne).Select(y => y.WayneDate).Distinct()
+					WorkDayList = x.ERWayne.Concat(x.WardWayne).Concat(x.OPDWayne).Distinct()
 				})
 				.Select(x => new {
 				  	Name = x.Name,
@@ -138,19 +135,21 @@ namespace DrWayne {
 			
 			var wayne = new Wayne(currentDate);
 			var rnd = new Random();
-			var doctorListCopy = _doctorList.Where(x => !x.AbsenceList.Contains(currentDate))
-											.OrderBy(x => x.ERWayne.Count() + x.WardWayne.Count() + x.OPDWayne.Count())
-											.ThenBy(x => x.Tireness / x.Factor)
-											.ThenBy(x => rnd.Next())
-											.Take(currentDate.NeedOPD() ? 4 : 3)
-											.ToList();
-			foreach (var erDoctor in doctorListCopy) {
+			var doctorListCopy = _doctorList
+				.Where(x => !x.AbsenceList.Contains(currentDate))
+				.Where(x => !x.AmInWayneMoreThanTwoConsecutiveDays(currentDate))
+				.OrderBy(x => x.ERWayne.Count() + x.WardWayne.Count() + x.OPDWayne.Count())
+				.ThenBy(x => x.Tireness / x.Factor)
+				.ThenBy(x => rnd.Next())
+				.Take(currentDate.NeedOPD() ? 4 : 3)
+				.ToList();
+			foreach (var erDoctor in doctorListCopy.Where(d => d.AmIOKForERThisDay(currentDate))) {
 				wayne.ERDoctor = erDoctor;
-				erDoctor.ERWayne.Add(wayne);
+				erDoctor.ERWayne.Add(currentDate);
 				erDoctor.Tireness += erTireness;
 				foreach (var wardDoctor in doctorListCopy.Where(x => x != erDoctor)) {
 					wayne.WardDoctor = wardDoctor;
-					wardDoctor.WardWayne.Add(wayne);
+					wardDoctor.WardWayne.Add(currentDate);
 					wardDoctor.Tireness += wardTireness;
 					if (!currentDate.NeedOPD()) {
 						var wayneTableCopy = Copy();
@@ -161,21 +160,21 @@ namespace DrWayne {
 					else {
 						foreach (var OPDDoctor in doctorListCopy.Where(x => x != erDoctor && x != wardDoctor)) {
 							wayne.OPDDoctor = OPDDoctor;
-							OPDDoctor.OPDWayne.Add(wayne);
+							OPDDoctor.OPDWayne.Add(currentDate);
 							OPDDoctor.Tireness += OPDTireness;
 							var wayneTableCopy = Copy();
 							if (wayneTableCopy.AddWayneIfAcceptable(wayne)) {
 								wayneTableCopy.Fill();
 							}
 							OPDDoctor.Tireness -= OPDTireness;
-							OPDDoctor.OPDWayne.Remove(wayne);
+							OPDDoctor.OPDWayne.Remove(currentDate);
 						}
 					}
 					wardDoctor.Tireness -= wardTireness;
-					wardDoctor.WardWayne.Remove(wayne);
+					wardDoctor.WardWayne.Remove(currentDate);
 				}
 				erDoctor.Tireness -= erTireness;
-				erDoctor.ERWayne.Remove(wayne);
+				erDoctor.ERWayne.Remove(currentDate);
 			}
 		}
 	}	
