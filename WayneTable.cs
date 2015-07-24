@@ -38,7 +38,7 @@ namespace DrWayne {
 		}
 		
 		public void AddFixWayne(Wayne wayne) {
-			if (wayne.IsAcceptable())
+			if (!wayne.IsAcceptable())
 				throw new Exception("Your fixed wayne is not correct, please recheck it");
 			
 			_doctorList.First(x => x == wayne.ERDoctor).ERWayne.Add(wayne.WayneDate);
