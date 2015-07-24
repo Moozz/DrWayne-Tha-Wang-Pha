@@ -29,7 +29,7 @@ namespace DrWayne {
 		private int _totalDaysInMonth;
 		private int _totalWorkingDay;
 		
-		public bool AddWayneIfAcceptable(Wayne wayne) {
+		private bool AddWayneIfAcceptable(Wayne wayne) {
 			if (wayne.IsAcceptable() && 
 				!IsThisDoctorAtERYesterday(wayne.ERDoctor) &&
 				!IsThisDoctorInWayneTheLastTwoDays(wayne.ERDoctor) &&
