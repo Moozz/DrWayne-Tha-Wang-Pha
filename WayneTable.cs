@@ -38,9 +38,7 @@ namespace DrWayne {
 		}
 		
 		public void AddFixWayne(Wayne wayne) {
-			if (wayne.ERDoctor == null ||
-				wayne.WardDoctor == null ||
-				(wayne.WayneDate.NeedOPD() && wayne.OPDDoctor == null))
+			if (wayne.IsAcceptable())
 				throw new Exception("Your fixed wayne is not correct, please recheck it");
 			
 			_doctorList.First(x => x == wayne.ERDoctor).ERWayne.Add(wayne.WayneDate);
@@ -65,16 +63,32 @@ namespace DrWayne {
 			return sb.ToString();
 		}
 		
+		public string ToCsvFormat() {
+			var sb = new StringBuilder();
+			sb.AppendLine(string.Join(",", new [] { "Date" }.Concat(_doctorList.Select(x => x.Name))));
+			foreach (var wayne in _wayneTable.OrderBy(x => x.WayneDate)) {				
+				sb.AppendLine(string.Join(",", new [] {wayne.WayneDate.ToString("ddd dd")}.Concat(_doctorList.Select(x => x.ERWayne.Contains(wayne.WayneDate) 
+						? "ER"
+						: x.WardWayne.Contains(wayne.WayneDate)
+							? "WA"
+							: x.OPDWayne.Contains(wayne.WayneDate) 
+								? "OPD"
+								: "-"))));
+			}
+			return sb.ToString();
+		}
+		
 		public void ShowResult() {
 			Console.WriteLine("{0, -10} : {1, 5} {2, 5} {3, 5}", "Name", "ER", "Ward", "OPD");
 	  		foreach (var p in _doctorList) {
 	  			Console.WriteLine("{0, -10} : {1, 5} {2, 5} {3, 5}", p.Name, p.ERWayne.Count(), p.WardWayne.Count(), p.OPDWayne.Count());	
 	  		}
-			
-			Console.WriteLine("{0}", ToString());
-			Console.WriteLine("Tireness level at the end of the month");
-			Console.WriteLine(string.Join("\n", _doctorList.Select(x => x.Name + " : " + x.Tireness)));
-			Console.WriteLine("=== END ===\n");
+			Console.WriteLine("{0}", ToCsvFormat());
+			//Console.WriteLine("{0}", ToString());
+			//Console.WriteLine("Tireness level at the end of the month");
+			//Console.WriteLine(string.Join("\n", _doctorList.Select(x => x.Name + " : " + x.Tireness)));
+			//Console.WriteLine("=== END ===\n");
+			Console.ReadLine();
 		}
 		
 		private WayneTable Copy() {

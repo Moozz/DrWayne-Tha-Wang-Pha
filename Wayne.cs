@@ -26,7 +26,7 @@ namespace DrWayne {
 		public bool IsAcceptable () {
 			return  ERDoctor != null && WardDoctor != null &&
 					(ERDoctor.Exp != DoctorExperience.Intern1 || ERDoctor.Exp != WardDoctor.Exp) &&
-					(WayneDate.DayOfWeek != DayOfWeek.Saturday || OPDDoctor != null);
+					(!WayneDate.NeedOPD() || OPDDoctor != null);
 		}
 	}
 }

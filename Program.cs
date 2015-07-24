@@ -22,7 +22,7 @@ namespace DrWayne {
 			kao.RegisterAbsence(year, month, new List<int> { 1, 2, 14, 15, 16, 31 });
 			golf.RegisterAbsence(year, month, new List<int> { 31 });
 			
-			_doctorList = new List<Doctor> { did, nui, ja, bean, kao, golf };
+			_doctorList = new List<Doctor> { bean, ja, golf, kao, nui, did };
 			
 			DateTimeExtension.AddSpecialHoliday(new DateTime(year, month, 12));
 			
