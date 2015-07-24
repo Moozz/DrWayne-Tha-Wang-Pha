@@ -27,8 +27,21 @@ namespace DrWayne {
 			DateTimeExtension.AddSpecialHoliday(new DateTime(year, month, 12));
 			
 			Console.WriteLine("Thinking...");
-			var wayneTable = new WayneTable(_doctorList, year, month);
-			wayneTable.Fill();
+			var wt = new WayneTable(_doctorList, year, month);
+			
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 1), bean, did, golf));
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 2), golf, nui));
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 8), did, bean, kao));
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 9), ja, kao));
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 12), nui, golf, ja));
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 15), bean, ja, nui));
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 16), nui, golf));
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 22), kao, ja, did));
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 23), ja, did));
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 29), golf, kao, bean));
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 30), kao, bean));
+			
+			wt.Fill();
         }
     }
 }

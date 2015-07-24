@@ -55,7 +55,7 @@ namespace DrWayne {
 			var sb = new StringBuilder();
 			sb.AppendFormat("Wayne of Month {0}, {1}\n", Month, Year);
 			sb.AppendFormat("{0, -7} {1, 10} {2, 10} {3, 10}\n", "Date", "ER", "WARD", "OPD");
-			foreach (var wayne in _wayneTable) {
+			foreach (var wayne in _wayneTable.OrderBy(x => x.WayneDate)) {
 				sb.AppendFormat("{0, -7} {1, 10} {2, 10} {3, 10}\n", 
 					wayne.WayneDate.ToString("ddd dd"), 
 					wayne.ERDoctor.Name, 
@@ -85,7 +85,7 @@ namespace DrWayne {
 		private int GetFirstDayToFill() {
 			return Enumerable.Range(1, _totalDaysInMonth)
 							.Except(_wayneTable.Select(x => x.WayneDate.Day).OrderBy(x => x))
-							.Min() + 1;
+							.Min();
 		}
 		
 		private bool FairEnough() {
@@ -101,7 +101,7 @@ namespace DrWayne {
 				}).ToList();
 			if (_doctorList.Max(x => x.ERWayne.Count()) - _doctorList.Min(x => x.ERWayne.Count()) <= 2 &&
 				_doctorList.Max(x => x.WardWayne.Count()) - _doctorList.Min(x => x.WardWayne.Count()) <= 2 &&
-				//restList.Max(x => x.RestOnHolidayCount) - restList.Min(x => x.RestOnHolidayCount) <= 2 && 
+				restList.Max(x => x.RestOnHolidayCount) - restList.Min(x => x.RestOnHolidayCount) <= 2 && 
 			  	restList.Max(x => x.RestOnWorkingDayCount) - restList.Min(x => x.RestOnWorkingDayCount) <= 2) {
 
 				Console.WriteLine("{0, -10} : {1, 5} {2, 5} {3, 5}", "Name", "ER", "Ward", "OPD");
@@ -122,7 +122,7 @@ namespace DrWayne {
 		
 		public void Fill() {
 			if (IsDone()) {
-				//if (!FairEnough()) return;
+				if (!FairEnough()) return;
 				ShowResult();
 				return;
 			}
