@@ -102,7 +102,7 @@ namespace DrWayne {
 				}).ToList();
 			if (_doctorList.Max(x => x.ERWayne.Count()) - _doctorList.Min(x => x.ERWayne.Count()) <= 2 &&
 				_doctorList.Max(x => x.WardWayne.Count()) - _doctorList.Min(x => x.WardWayne.Count()) <= 2 &&
-				restList.Max(x => x.RestOnHolidayCount) - restList.Min(x => x.RestOnHolidayCount) <= 1 && 
+				//restList.Max(x => x.RestOnHolidayCount) - restList.Min(x => x.RestOnHolidayCount) <= 2 && 
 			  	restList.Max(x => x.RestOnWorkingDayCount) - restList.Min(x => x.RestOnWorkingDayCount) <= 2) {
 
 				Console.WriteLine("{0, -10} : {1, 5} {2, 5} {3, 5}", "Name", "ER", "Ward", "OPD");
@@ -123,9 +123,7 @@ namespace DrWayne {
 		
 		public void Fill() {
 			if (IsDone()) {
-				//if (!FairEnough()) {
-				//  	return;
-				//}
+				if (!FairEnough()) return;
 				ShowResult();
 				return;
 			}
@@ -141,9 +139,11 @@ namespace DrWayne {
 			var wayne = new Wayne(currentDate);
 			var rnd = new Random();
 			var doctorListCopy = _doctorList.Where(x => !x.AbsenceList.Contains(currentDate))
-											.OrderBy(x => x.Tireness / x.Factor)
+											.OrderBy(x => x.ERWayne.Count() + x.WardWayne.Count() + x.OPDWayne.Count())
+											.ThenBy(x => x.Tireness / x.Factor)
 											.ThenBy(x => rnd.Next())
-											.ToList();					
+											.Take(currentDate.NeedOPD() ? 4 : 3)
+											.ToList();
 			foreach (var erDoctor in doctorListCopy) {
 				wayne.ERDoctor = erDoctor;
 				erDoctor.ERWayne.Add(wayne);
