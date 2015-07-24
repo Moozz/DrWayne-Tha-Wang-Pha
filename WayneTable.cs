@@ -55,6 +55,13 @@ namespace DrWayne {
 			return sb.ToString();
 		}
 		
+		public void ShowResult() {
+			Console.WriteLine("{0}", ToString());
+			Console.WriteLine("Tireness level at the end of the month");
+			Console.WriteLine(string.Join("\n", _doctorList.Select(x => x.Name + " : " + x.Tireness)));
+			Console.WriteLine("=== END ===\n");
+		}
+		
 		private WayneTable Copy() {
 			var wayneTableCopy = new WayneTable(_doctorList, Year, Month);
 			wayneTableCopy._wayneTable = this._wayneTable.ToList();
@@ -116,14 +123,10 @@ namespace DrWayne {
 		
 		public void Fill() {
 			if (IsDone()) {
-				//  if (!FairEnough()) {
+				//if (!FairEnough()) {
 				//  	return;
-				//  }
-				Console.WriteLine("{0}", ToString());
-				Console.WriteLine("Tireness level at the end of the month");
-				Console.WriteLine(string.Join("\n", _doctorList.Select(x => x.Name + " : " + x.Tireness)));
-				Console.WriteLine("=== END ===\n");
-				//Console.ReadLine();
+				//}
+				ShowResult();
 				return;
 			}
 			var currentDate = new DateTime(Year, Month, GetLastWayneDay() + 1);
