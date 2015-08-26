@@ -108,7 +108,8 @@ namespace DrWayne {
 		}
 		
 		private bool FairEnough() {
-			var restList = _doctorList
+			var doctorListWithoutBoss = _doctorList.Where(d => d.Name != "P' Did");
+			var restList = doctorListWithoutBoss
 				.Select(x => new {
 					Name = x.Name,
 					WorkDayList = x.GetAllWayneDate()
@@ -118,8 +119,9 @@ namespace DrWayne {
 				  	RestOnWorkingDayCount = _totalWorkingDay - x.WorkDayList.Count(y => !y.IsHoliday()),
 					RestOnHolidayCount = (_totalDaysInMonth - _totalWorkingDay) - x.WorkDayList.Count(y => y.IsHoliday())
 				}).ToList();
-			if (_doctorList.Max(x => x.ERWayne.Count()) - _doctorList.Min(x => x.ERWayne.Count()) <= 2 &&
-				_doctorList.Max(x => x.WardWayne.Count()) - _doctorList.Min(x => x.WardWayne.Count()) <= 2 &&
+			if (_doctorList.Single(d => d.Name == "P' Did").GetAllWayneDate().Count() == 6 &&
+				doctorListWithoutBoss.Max(x => x.ERWayne.Count()) - doctorListWithoutBoss.Min(x => x.ERWayne.Count()) <= 2 &&
+				doctorListWithoutBoss.Max(x => x.WardWayne.Count()) - doctorListWithoutBoss.Min(x => x.WardWayne.Count()) <= 2 &&
 				restList.Max(x => x.RestOnHolidayCount) - restList.Min(x => x.RestOnHolidayCount) <= 2 && 
 			  	restList.Max(x => x.RestOnWorkingDayCount) - restList.Min(x => x.RestOnWorkingDayCount) <= 2) {
 				
