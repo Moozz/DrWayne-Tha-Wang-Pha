@@ -155,7 +155,7 @@ namespace DrWayne {
 			var doctorListCopy = _doctorList
 				.Where(x => !x.AbsenceList.Contains(currentDate))
 				.Where(x => !x.AmInWayneMoreThanTwoConsecutiveDays(currentDate))
-				.OrderBy(x => x.ERWayne.Count() + x.WardWayne.Count() + x.OPDWayne.Count())
+				.OrderBy(x => (x.ERWayne.Count() + x.WardWayne.Count() + x.OPDWayne.Count()) / x.Factor)
 				.ThenBy(x => x.Tireness / x.Factor)
 				.ThenBy(x => rnd.Next())
 				.Take(currentDate.NeedOPD() ? 4 : 3)
