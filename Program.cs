@@ -22,14 +22,21 @@ namespace DrWayne {
 			gofilm.RegisterAbsence(year, month, new List<int> { 12, 13, 19, 20 });
 			saran.RegisterAbsence(year, month, new List<int> {  });
 			
-			_doctorList = new List<Doctor> { bean, ja, saran, gofilm, nui, did };
+			_doctorList = new List<Doctor> { bean, ja, gofilm, saran, nui, did };
 			
-			DateTimeExtension.AddSpecialHoliday(new DateTime(year, month, 12));
+			//DateTimeExtension.AddSpecialHoliday(new DateTime(year, month, 12));
 			
 			Console.WriteLine("Thinking...");
 			var wt = new WayneTable(_doctorList, year, month);
 			
-			wt.AddFixWayne(new Wayne(new DateTime(year, month, 1), bean, did, saran));
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 5), ja, gofilm, did));
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 6), nui, ja));
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 12), bean, saran, did));
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 13), did, bean));
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 19), bean, nui, saran));
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 20), saran, bean));
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 26), ja, nui, gofilm));
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 27), gofilm, ja));
 			wt.Fill();
         }
     }
