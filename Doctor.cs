@@ -46,7 +46,8 @@ namespace DrWayne {
         public bool AmIOKForERThisDay(DateTime d) {
             var yesterday = d.AddDays(-1);
             var tomorrow = d.AddDays(1);
-            return !ERWayne.Contains(yesterday) && !ERWayne.Contains(tomorrow);
+            return (Exp != DoctorExperience.Intern1 || d.Day > 7) &&
+                !ERWayne.Contains(yesterday) && !ERWayne.Contains(tomorrow);
         }
         
 		public bool AmInWayneMoreThanTwoConsecutiveDays(DateTime d) {
