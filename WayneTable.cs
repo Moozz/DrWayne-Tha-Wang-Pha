@@ -108,8 +108,8 @@ namespace DrWayne {
 		}
 		
 		private bool FairEnough() {
-			var doctorListWithoutBoss = _doctorList.Where(d => d.Name != "P' Did");
-			var restList = doctorListWithoutBoss
+			var doctorListWithoutHandicap = _doctorList.Where(d => d.Factor == 1);
+			var restList = doctorListWithoutHandicap
 				.Select(x => new {
 					Name = x.Name,
 					WorkDayList = x.GetAllWayneDate()
@@ -119,18 +119,23 @@ namespace DrWayne {
 				  	RestOnWorkingDayCount = _totalWorkingDay - x.WorkDayList.Count(y => !y.IsHoliday()),
 					RestOnHolidayCount = (_totalDaysInMonth - _totalWorkingDay) - x.WorkDayList.Count(y => y.IsHoliday())
 				}).ToList();
-			if (_doctorList.Single(d => d.Name == "P' Did").GetAllWayneDate().Count() == 6 &&
-				doctorListWithoutBoss.Max(x => x.ERWayne.Count()) - doctorListWithoutBoss.Min(x => x.ERWayne.Count()) <= 2 &&
-				doctorListWithoutBoss.Max(x => x.WardWayne.Count()) - doctorListWithoutBoss.Min(x => x.WardWayne.Count()) <= 2 &&
+			if (//// Special case for each month
+				//_doctorList.Single(d => d.Name == "P' Did").GetAllWayneDate().Count() == 10 &&
+				//_doctorList.Single(d => d.Name == "Saran").GetAllWayneDate().Count() == 9 &&
+				//_doctorList.Single(d => d.Name == "Gofilm").GetAllWayneDate().Count() == 9 &&
+				////
+				doctorListWithoutHandicap.Max(x => x.ERWayne.Count()) - doctorListWithoutHandicap.Min(x => x.ERWayne.Count()) <= 2 &&
+				doctorListWithoutHandicap.Max(x => x.WardWayne.Count()) - doctorListWithoutHandicap.Min(x => x.WardWayne.Count()) <= 2 &&
 				restList.Max(x => x.RestOnHolidayCount) - restList.Min(x => x.RestOnHolidayCount) <= 2 && 
 			  	restList.Max(x => x.RestOnWorkingDayCount) - restList.Min(x => x.RestOnWorkingDayCount) <= 2) {
 				
 				Console.WriteLine();
-				Console.WriteLine("{0, -8} : {1, 10} {2, 10}", "Name", "RestWDay", "RestHoliday");
+				Console.WriteLine("{0, -8} : {1, 10} {2, 10} {3, 10}", "Name", "RestWDay", "RestHoliday", "Sum");
 				foreach (var p in restList) {
-					Console.WriteLine("{0, -8} : {1, 10} {2, 10}", p.Name,
+					Console.WriteLine("{0, -8} : {1, 10} {2, 10} {3, 10}", p.Name,
 						 p.RestOnWorkingDayCount,
-						 p.RestOnHolidayCount);
+						 p.RestOnHolidayCount,
+						 p.RestOnHolidayCount + p.RestOnWorkingDayCount);
 				}
 				return true;
 			}
