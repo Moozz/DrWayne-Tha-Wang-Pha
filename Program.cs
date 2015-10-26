@@ -5,12 +5,12 @@ namespace DrWayne {
     public class Program {
 		private static List<Doctor> _doctorList;
         public static void Main(string[] args) {
-            var did = new Doctor("P' Did", DoctorExperience.Oldie, 0.7);
-			var nui = new Doctor("P' Nui", DoctorExperience.Oldie, 0.9);
-			var ja = new Doctor("Ja+", DoctorExperience.Intern3);
-			var bean = new Doctor("Bean", DoctorExperience.Intern3);
-			var ohm = new Doctor("Ohm", DoctorExperience.Intern1);
-			var tong = new Doctor("Tong", DoctorExperience.Intern1);
+            var did = new Doctor("P' Did", DoctorExperience.Oldie, 3, 4, 0.7);
+			var nui = new Doctor("P' Nui", DoctorExperience.Oldie, 4, 7, 0.9);
+			var ja = new Doctor("Ja+", DoctorExperience.Intern3, 6, 4);
+			var bean = new Doctor("Bean", DoctorExperience.Intern3, 6, 4);
+			var ohm = new Doctor("Ohm", DoctorExperience.Intern1, 5, 5);
+			var tong = new Doctor("Tong", DoctorExperience.Intern1, 5, 5);
 			
 			var year = 2015;
 			var month = 11;
