@@ -43,6 +43,10 @@ namespace DrWayne {
                 .ForEach(d => AbsenceList.Add(d));
         }
         
+        public void RegisterAbsence(int year, int month, int startDate, int endDate) {
+            RegisterAbsence(year, month, Enumerable.Range(startDate, endDate-startDate + 1).ToList());
+        }
+        
         public bool AmIOKForERThisDay(DateTime d) {
             var yesterday = d.AddDays(-1);
             var tomorrow = d.AddDays(1);
