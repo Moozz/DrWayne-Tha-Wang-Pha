@@ -119,10 +119,18 @@ namespace DrWayne {
 				  	RestOnWorkingDayCount = _totalWorkingDay - x.WorkDayList.Count(y => !y.IsHoliday()),
 					RestOnHolidayCount = (_totalDaysInMonth - _totalWorkingDay) - x.WorkDayList.Count(y => y.IsHoliday())
 				}).ToList();
+				
+			var gofilm = _doctorList.Single(d => d.Name == "Gofilm");
+			var saran = _doctorList.Single(d => d.Name == "Saran");	
+			
 			if (//// Special case for each month
 				//_doctorList.Single(d => d.Name == "P' Did").GetAllWayneDate().Count() == 10 &&
-				//_doctorList.Single(d => d.Name == "Saran").GetAllWayneDate().Count() == 9 &&
-				//_doctorList.Single(d => d.Name == "Gofilm").GetAllWayneDate().Count() == 9 &&
+				gofilm.GetAllWayneDate().Count() == 9 && 
+				gofilm.ERWayne.Count() == 5 && 
+				gofilm.WardWayne.Count() == 3 &&
+				saran.GetAllWayneDate().Count() == 9 &&
+				saran.ERWayne.Count() == 5 && 
+				saran.WardWayne.Count() == 3 &&
 				////
 				doctorListWithoutHandicap.Max(x => x.ERWayne.Count()) - doctorListWithoutHandicap.Min(x => x.ERWayne.Count()) <= 2 &&
 				doctorListWithoutHandicap.Max(x => x.WardWayne.Count()) - doctorListWithoutHandicap.Min(x => x.WardWayne.Count()) <= 2 &&
