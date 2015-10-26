@@ -11,7 +11,7 @@ namespace DrWayne {
     }
     
     public class Doctor {       
-        public Doctor(string name, DoctorExperience exp, double factor = 1) {
+        public Doctor(string name, DoctorExperience exp, int maxEr = 99, int maxWard = 99, double factor = 1) {
             Name = name;
             Exp = exp;
             AbsenceList = new HashSet<DateTime>();
@@ -20,6 +20,8 @@ namespace DrWayne {
             OPDWayne = new HashSet<DateTime>();
             Tireness = 0;
             Factor = factor;
+            MaximumERWayne = maxEr;
+            MaximumWardWayne = maxWard;
         }
         
         public string Name { get; private set; }
@@ -32,6 +34,9 @@ namespace DrWayne {
         public HashSet<DateTime> OPDWayne { get; private set; }
         
         public double Factor { get; private set; }
+
+        public int MaximumERWayne { get; private set; }
+        public int MaximumWardWayne { get; private set; }
         
         public void RegisterAbsence(DateTime date) {
             AbsenceList.Add(date);
@@ -50,7 +55,11 @@ namespace DrWayne {
         public bool AmIOKForERThisDay(DateTime d) {
             var yesterday = d.AddDays(-1);
             var tomorrow = d.AddDays(1);
-            return !ERWayne.Contains(yesterday) && !ERWayne.Contains(tomorrow);
+            return ERWayne.Count() < MaximumERWayne && !ERWayne.Contains(yesterday) && !ERWayne.Contains(tomorrow);
+        }
+        
+        public bool AmIOKForWardThisDay(DateTime d) {
+            return WardWayne.Count() < MaximumWardWayne;
         }
         
 		public bool AmInWayneMoreThanTwoConsecutiveDays(DateTime d) {
