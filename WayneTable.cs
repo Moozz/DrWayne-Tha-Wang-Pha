@@ -156,7 +156,7 @@ namespace DrWayne {
 			var currentDate = new DateTime(Year, Month, GetFirstDayToFill());
 			var erTireness = 10;
 			var wardTireness = 5;
-			var OPDTireness = 4;
+			var OPDTireness = 2;
 			if (currentDate.IsHoliday()) {
 				erTireness = (erTireness * 3) / 2;
 				wardTireness = (wardTireness * 3) / 2;

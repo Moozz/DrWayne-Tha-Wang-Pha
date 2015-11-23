@@ -5,12 +5,12 @@ namespace DrWayne {
     public class Program {
 		private static List<Doctor> _doctorList;
         public static void Main(string[] args) {
-            var did = new Doctor("P' Did", DoctorExperience.Oldie, 99, 99, 0.7);
-			var nui = new Doctor("P' Nui", DoctorExperience.Oldie);
-			var ja = new Doctor("Ja+", DoctorExperience.Intern3);
-			var bean = new Doctor("Bean", DoctorExperience.Intern3);
-			var ohm = new Doctor("Ohm", DoctorExperience.Intern1);
-			var tong = new Doctor("Tong", DoctorExperience.Intern1);
+            var did = new Doctor("P' Did", DoctorExperience.Oldie, 6, 4, 0.7);
+			var nui = new Doctor("P' Nui", DoctorExperience.Oldie, 6, 6);
+			var ja = new Doctor("Ja+", DoctorExperience.Intern3, 5, 5, 0.8);
+			var bean = new Doctor("Bean", DoctorExperience.Intern3, 5, 6, 0.8);
+			var ohm = new Doctor("Ohm", DoctorExperience.Intern1, 5, 6, 0.8);
+			var tong = new Doctor("Tong", DoctorExperience.Intern1, 6, 5, 0.8);
 			_doctorList = new List<Doctor> { bean, ja, ohm, tong, nui, did };
 			
 			var year = 2015;
@@ -31,6 +31,9 @@ namespace DrWayne {
 			wt.AddFixWayne(new Wayne(new DateTime(year, month, 6), ohm, did));
 			wt.AddFixWayne(new Wayne(new DateTime(year, month, 7), tong, ohm, did));
 			wt.AddFixWayne(new Wayne(new DateTime(year, month, 10), ja, bean, nui));
+			
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 11), did, nui));
+			
 			wt.AddFixWayne(new Wayne(new DateTime(year, month, 12), bean, ja, nui));
 			wt.AddFixWayne(new Wayne(new DateTime(year, month, 13), ja, nui));
 			wt.AddFixWayne(new Wayne(new DateTime(year, month, 19), tong, ohm, nui));
