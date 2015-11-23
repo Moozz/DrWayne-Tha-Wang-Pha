@@ -119,16 +119,9 @@ namespace DrWayne {
 				  	RestOnWorkingDayCount = _totalWorkingDay - x.WorkDayList.Count(y => !y.IsHoliday()),
 					RestOnHolidayCount = (_totalDaysInMonth - _totalWorkingDay) - x.WorkDayList.Count(y => y.IsHoliday())
 				}).ToList();
-				
-			var did = _doctorList.Single(x => x.Name == "P' Did");
-			var nui = _doctorList.Single(x => x.Name == "P' Nui");
-			
-			if (//// Special case for each month
+
+			//if (//// Special case for each month
 				//_doctorList.Single(d => d.Name == "P' Did").GetAllWayneDate().Count() == 10 &&
-				did.ERWayne.Count() == 3 &&
-				did.WardWayne.Count() == 4 &&
-				nui.ERWayne.Count() == 4 &&
-				nui.WardWayne.Count() == 7 &&
 				//  gofilm.ERWayne.Count() == 5 && 
 				//  gofilm.WardWayne.Count() == 3 &&
 				//  saran.GetAllWayneDate().Count() == 9 &&
@@ -136,11 +129,11 @@ namespace DrWayne {
 				//  saran.WardWayne.Count() == 3 &&
 				
 				//// Regular cases
-				doctorListWithoutHandicap.Max(x => x.ERWayne.Count()) - doctorListWithoutHandicap.Min(x => x.ERWayne.Count()) <= 1 &&
-				doctorListWithoutHandicap.Max(x => x.WardWayne.Count()) - doctorListWithoutHandicap.Min(x => x.WardWayne.Count()) <= 1// &&
+				//doctorListWithoutHandicap.Max(x => x.ERWayne.Count()) - doctorListWithoutHandicap.Min(x => x.ERWayne.Count()) <= 1 &&
+				//doctorListWithoutHandicap.Max(x => x.WardWayne.Count()) - doctorListWithoutHandicap.Min(x => x.WardWayne.Count()) <= 1// &&
 				//restList.Max(x => x.RestOnHolidayCount) - restList.Min(x => x.RestOnHolidayCount) <= 1 && 
 			  	//restList.Max(x => x.RestOnWorkingDayCount) - restList.Min(x => x.RestOnWorkingDayCount) <= 1
-				) {
+				//) {
 				Console.WriteLine();
 				Console.WriteLine("{0, -8} : {1, 10} {2, 10} {3, 10}", "Name", "RestWDay", "RestHoliday", "Sum");
 				foreach (var p in restList) {
@@ -150,8 +143,8 @@ namespace DrWayne {
 						 p.RestOnHolidayCount + p.RestOnWorkingDayCount);
 				}
 				return true;
-			}
-			return false;
+			//}
+			//return false;
 		}
 		
 		public void Fill() {

@@ -5,43 +5,41 @@ namespace DrWayne {
     public class Program {
 		private static List<Doctor> _doctorList;
         public static void Main(string[] args) {
-            var did = new Doctor("P' Did", DoctorExperience.Oldie, 3, 4, 0.7);
-			var nui = new Doctor("P' Nui", DoctorExperience.Oldie, 4, 7, 0.9);
-			var ja = new Doctor("Ja+", DoctorExperience.Intern3, 6, 4);
-			var bean = new Doctor("Bean", DoctorExperience.Intern3, 6, 4);
-			var ohm = new Doctor("Ohm", DoctorExperience.Intern1, 5, 5);
-			var tong = new Doctor("Tong", DoctorExperience.Intern1, 5, 5);
-			
-			var year = 2015;
-			var month = 11;
-			
-			nui.RegisterAbsence(year, month, 19, 22);
-			ja.RegisterAbsence(year, month, new List<int> { 6, 7, 8, 9, 20, 21, 22 });
-			bean.RegisterAbsence(year, month, 14, 21);
-			did.RegisterAbsence(year, month, new List<int> { 14, 16, 17, 18, 22, 26, 27 });
-			ohm.RegisterAbsence(year, month, 6, 8);
-			tong.RegisterAbsence(year, month, new List<int> { });
-			
+            var did = new Doctor("P' Did", DoctorExperience.Oldie, 99, 99, 0.7);
+			var nui = new Doctor("P' Nui", DoctorExperience.Oldie);
+			var ja = new Doctor("Ja+", DoctorExperience.Intern3);
+			var bean = new Doctor("Bean", DoctorExperience.Intern3);
+			var ohm = new Doctor("Ohm", DoctorExperience.Intern1);
+			var tong = new Doctor("Tong", DoctorExperience.Intern1);
 			_doctorList = new List<Doctor> { bean, ja, ohm, tong, nui, did };
 			
-			//DateTimeExtension.AddSpecialHoliday(new DateTime(year, month, 12));
+			var year = 2015;
+			var month = 12;
+			DateTimeExtension.AddSpecialHoliday(new DateTime(year, month, 7));
+			DateTimeExtension.AddSpecialHoliday(new DateTime(year, month, 10));
+			DateTimeExtension.AddSpecialHoliday(new DateTime(year, month, 31));
+			
+			nui.RegisterAbsence(year, month, new List<int> { 5, 6, 7, 30, 31 });
+			ja.RegisterAbsence(year, month, 4, 8);
+			bean.RegisterAbsence(year, month, 6, 7);
+			//did.RegisterAbsence(year, month, new List<int> { 14, 16, 17, 18, 22, 26, 27 });
+			ohm.RegisterAbsence(year, month, 11, 13);
+			tong.RegisterAbsence(year, month, 11, 13);
+			
+			var wt = new WayneTable(_doctorList, year, month);
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 5), bean, tong, did));
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 6), ohm, did));
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 7), tong, ohm, did));
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 10), ja, bean, nui));
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 12), bean, ja, nui));
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 13), ja, nui));
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 19), tong, ohm, nui));
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 20), ohm, nui));
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 26), nui, did, ja));
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 27), did, nui));
+			wt.AddFixWayne(new Wayne(new DateTime(year, month, 31), tong, bean, ohm));
 			
 			Console.WriteLine("Thinking...");
-			var wt = new WayneTable(_doctorList, year, month);
-			wt.AddFixWayne(new Wayne(new DateTime(year, month, 1), ja, bean));
-			wt.AddFixWayne(new Wayne(new DateTime(year, month, 7), tong, nui, bean));
-			wt.AddFixWayne(new Wayne(new DateTime(year, month, 8), nui, tong));
-			wt.AddFixWayne(new Wayne(new DateTime(year, month, 14), ja, nui, ohm));
-			wt.AddFixWayne(new Wayne(new DateTime(year, month, 15), ohm, ja));
-			wt.AddFixWayne(new Wayne(new DateTime(year, month, 16), nui, tong));
-			wt.AddFixWayne(new Wayne(new DateTime(year, month, 17), ja, tong));
-			wt.AddFixWayne(new Wayne(new DateTime(year, month, 18), nui, ohm));
-			wt.AddFixWayne(new Wayne(new DateTime(year, month, 19), ja, tong));
-			wt.AddFixWayne(new Wayne(new DateTime(year, month, 20), ohm, did));
-			wt.AddFixWayne(new Wayne(new DateTime(year, month, 21), did, ohm, tong));
-			wt.AddFixWayne(new Wayne(new DateTime(year, month, 22), bean, tong));
-			wt.AddFixWayne(new Wayne(new DateTime(year, month, 28), bean, ohm, ja));
-			wt.AddFixWayne(new Wayne(new DateTime(year, month, 29), ja, bean));
 			wt.Fill();
         }
     }
