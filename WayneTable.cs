@@ -38,8 +38,10 @@ namespace DrWayne {
 		}
 		
 		public void AddFixWayne(Wayne wayne) {
-			if (!wayne.IsAcceptable())
-				throw new Exception("Your fixed wayne is not correct, please recheck it");
+			if (!wayne.IsAcceptable()) {
+                Console.WriteLine(wayne.ToString());
+                throw new Exception("Your fixed wayne is not correct, please recheck it");
+            }
 			
 			_doctorList.First(x => x == wayne.ERDoctor).ERWayne.Add(wayne.WayneDate);
 			_doctorList.First(x => x == wayne.WardDoctor).WardWayne.Add(wayne.WayneDate);
