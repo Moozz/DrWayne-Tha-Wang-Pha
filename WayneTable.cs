@@ -110,18 +110,6 @@ namespace DrWayne {
 		}
 		
 		private bool FairEnough() {
-			var doctorListWithoutHandicap = _doctorList.Where(d => d.Factor == 1);
-			var restList = doctorListWithoutHandicap
-				.Select(x => new {
-					Name = x.Name,
-					WorkDayList = x.GetAllWayneDate()
-				})
-				.Select(x => new {
-				  	Name = x.Name,
-				  	RestOnWorkingDayCount = _totalWorkingDay - x.WorkDayList.Count(y => !y.IsHoliday()),
-					RestOnHolidayCount = (_totalDaysInMonth - _totalWorkingDay) - x.WorkDayList.Count(y => y.IsHoliday())
-				}).ToList();
-
 			//if (//// Special case for each month
 				//_doctorList.Single(d => d.Name == "P' Did").GetAllWayneDate().Count() == 10 &&
 				//  gofilm.ERWayne.Count() == 5 && 
@@ -136,21 +124,37 @@ namespace DrWayne {
 				//restList.Max(x => x.RestOnHolidayCount) - restList.Min(x => x.RestOnHolidayCount) <= 1 && 
 			  	//restList.Max(x => x.RestOnWorkingDayCount) - restList.Min(x => x.RestOnWorkingDayCount) <= 1
 				//) {
-				Console.WriteLine();
-				Console.WriteLine("{0, -8} : {1, 10} {2, 10} {3, 10}", "Name", "RestWDay", "RestHoliday", "Sum");
-				foreach (var p in restList) {
-					Console.WriteLine("{0, -8} : {1, 10} {2, 10} {3, 10}", p.Name,
-						 p.RestOnWorkingDayCount,
-						 p.RestOnHolidayCount,
-						 p.RestOnHolidayCount + p.RestOnWorkingDayCount);
-				}
 				return true;
 			//}
 			//return false;
 		}
 		
+        private void ShowFairness() {
+            var doctorListWithoutHandicap = _doctorList.Where(d => d.Factor == 1);
+			var restList = doctorListWithoutHandicap
+				.Select(x => new {
+					Name = x.Name,
+					WorkDayList = x.GetAllWayneDate()
+				})
+				.Select(x => new {
+				  	Name = x.Name,
+				  	RestOnWorkingDayCount = _totalWorkingDay - x.WorkDayList.Count(y => !y.IsHoliday()),
+					RestOnHolidayCount = (_totalDaysInMonth - _totalWorkingDay) - x.WorkDayList.Count(y => y.IsHoliday())
+				}).ToList();
+
+            Console.WriteLine();
+            Console.WriteLine("{0, -8} : {1, 10} {2, 10} {3, 10}", "Name", "RestWDay", "RestHoliday", "Sum");
+            foreach (var p in restList) {
+                Console.WriteLine("{0, -8} : {1, 10} {2, 10} {3, 10}", p.Name,
+                        p.RestOnWorkingDayCount,
+                        p.RestOnHolidayCount,
+                        p.RestOnHolidayCount + p.RestOnWorkingDayCount);
+            }
+        }
+        
 		public void Fill() {
 			if (IsDone()) {
+                ShowFairness();
 				if (!FairEnough()) return;
 				ShowResult();
 				return;
