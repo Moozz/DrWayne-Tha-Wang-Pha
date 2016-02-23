@@ -14,10 +14,8 @@ namespace DrWayne {
 			Year = year;
 			
 			_totalDaysInMonth = DateTime.DaysInMonth(year, month);
-			_totalWorkingDay = 0;
-			for (var i = 1; i <= _totalDaysInMonth; i++) {
-				_totalWorkingDay += new DateTime(year, month, i).IsHoliday() ? 0 : 1;
-			}
+			_totalWorkingDay = Enumerable.Range(1, _totalDaysInMonth)
+                .Sum(i => new DateTime(year, month, i).IsHoliday() ? 0 : 1);
 		}
 		private List<Wayne> _wayneTable;
 		private List<Doctor> _doctorList;
